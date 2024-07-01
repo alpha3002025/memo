@@ -68,7 +68,58 @@ https://developers.google.com/youtube/v3/docs/playlists/list?hl=ko 으로 접속
 
 
 
+## (업데이트) Youtube Data Api v3
+
+- [Youtube Data API v3 가이드 문서 \> 요청 승인 \> 개요](https://developers.google.com/youtube/v3/guides/authentication?hl=ko)
+- [Youtube Data API v3 \> 서버측 웹 앱](https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps?hl=ko)
+
+
+
+[Youtube Data API v3 가이드 문서 \> 요청 승인 \> 개요](https://developers.google.com/youtube/v3/guides/authentication?hl=ko) 에서는 OAuth 2.0 승인 구현 문서를 소개하고 있습니다.
+
+![](./img/0.youtube-google-oauth2.0-scope/11.png)
+
+
+
+여기서 서버 측 웹앱 버튼을 클릭해서 서버측의 OAuth 2.0 을 소개하는 페이지로 이동합니다.
+
+
+
+
+
+Youtube Data API v3 \> 서버측 웹 앱
+
+- https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps?hl=ko
+
+<br/>
+
+Youtube Data API v3 에서는 아래와 같은 권한들을 승인하도록 명시하고 있습니다.
+
+- https://www.googleapis.com/auth/youtube
+- https://www.googleapis.com/auth/youtube.channel-memberships.creator
+- https://www.googleapis.com/auth/youtube.force-ssl
+- https://www.googleapis.com/auth/youtube.readonly
+- https://www.googleapis.com/auth/youtube.upload
+- https://www.googleapis.com/auth/youtubepartner
+- https://www.googleapis.com/auth/youtubepartner-channel-audit
+
+<br/>
+
+
+
+![](./img/0.youtube-google-oauth2.0-scope/12.png)
+
+위의 항목들을 모두 개발자 콘솔에서 추가해줘야 합니다.<br/>
+
+
+
+
+
 ## 개발자 콘솔에서 scope 추가
+
+> TODO : 퇴근 후 30분 들여서 새로 액세스 SCOPE 추가하는 과정 정리 필요
+
+
 
 이렇게 복사한 scope 들을 개발자 콘솔에서 추가하는 방법을 알아봅니다.
 
