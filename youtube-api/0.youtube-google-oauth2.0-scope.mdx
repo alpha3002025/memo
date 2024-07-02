@@ -141,15 +141,26 @@ Youtube Data API v3 에서는 아래와 같은 권한들을 승인하도록 명�
 
 ![](./img/0.youtube-google-oauth2.0-scope/6.png)
 
+
+
+
+
 API 탐색기 내의 OAuth2.0 Scope 항목에 나타났던 항목들을 받아적은 후 '테이블에 추가' 버튼을 클릭합니다. 이때 쉼표로 구분하거나 개행문자로 각각의 scope 를 구분해주시면 됩니다.
 
 - https://www.googleapis.com/auth/youtube
+
+- https://www.googleapis.com/auth/youtube.channel-memberships.creator
 
 - https://www.googleapis.com/auth/youtube.force-ssl
 
 - https://www.googleapis.com/auth/youtube.readonly
 
+- https://www.googleapis.com/auth/youtube.upload
+
 - https://www.googleapis.com/auth/youtubepartner
+
+- https://www.googleapis.com/auth/youtubepartner-channel-audit
+
 
 <br/>
 
@@ -183,7 +194,26 @@ Test Users 항목에 대한 내용입니다. '저장 후 계속'을 클릭해서
 
 'BACK TO DASHBOARD' 를 클릭해서 OAuth 동의 화면 설정을 마무리 합니다.
 
+<br/>
 
+
+
+## 2024.07.03
+
+현재 위와 같이 Youtube Data API v3 에 해당되는 모든 권한을 부여했음에도 실행이 안되는 이슈를 찾는 중입니다.<br/>
+
+가능한 원인 들은 계속 아래에 리스트업 해보고 주말에 한번 시간을 3시간 이상 내서 다시 시도해볼 예정입니다.
+
+- SPA 에서도 scope 권한이 짝이 맞도록 지정
+  - React 에서 google auth 호출시 넘겨주는 scope 를 youtube data api v3 에 해당하는 권한들의 배열로 지정 후 URL Encode 해서 전달
+-  누락된 다른 Youtube Data API v3 권한이 있는지 확인
+- 다른 종류의 Youtube Library 가 있는 확인
+- 아래 라이브러리들 중 필요한 라이브러리들을 hard fork 후 라이브러리 분석 후 커스터마이징 
+  - `com.google.api-client:google-api-client`
+  - `com.google.oauth-client:google-oauth-client-jetty`
+  - `com.google.apis:google-api-services-youtubeAnalytics`
+  - `com.google.apis:google-api-services-youtube`
+  - 이렇게 하는 이유는 youtube, google 에서 제공해주는 api 는 브라우저를 타지 않고 있는데 도대체 이 외계인들은 회사 내에서 어떤 라이브러리를 사용해서 어떻게 했는지 궁금해져서임 ㅋㅋ....
 
 
 
