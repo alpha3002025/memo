@@ -347,7 +347,7 @@ CircuitBreaker 는 단순 자바객체로도 생성 가능한데 이것을 Bean 
 
 <br/>
 
-예를 들면 위의 코드가 귀찮다면 아래와 같이 직접 일반 자바 객체로 생성해서 사용하는 것 역시 가능합니다. 또는 안드로이드 등과 같은 자바기반 프레임워크에서도 아래와 같이 단순 자바 코드로 CircuitBreaker 객체를 생성하는 것이 가능합니다.
+예를 들면 위의 코드가 귀찮다면 아래와 같이 직접 일반 자바 객체로 생성해서 사용하는 것 역시 가능합니다. 안드로이드 등과 같은 자바기반 프레임워크에서도 아래와 같이 단순 자바 코드로 CircuitBreaker 객체를 생성하는 것이 가능합니다.
 
 ```java
 final CircuitBreakerConfig config = CircuitBreakerConfig.custom()
