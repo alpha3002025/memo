@@ -4,7 +4,29 @@
 
 ## 참고자료
 
-- RateLimiter : https://resilience4j.readme.io/docs/ratelimiter
+RateLimiter 
+
+- https://resilience4j.readme.io/docs/ratelimiter
+
+<br/>
+
+
+
+CircuitBreaker
+
+- https://resilience4j.readme.io/docs/circuitbreaker
+
+- [Reactive CircuitBreaker](https://chagchagchag.github.io/docs-spring-webflux/spring-cloud-reactive-circuitbreaker/reactive-circuit-breaker-basic/)
+- [Service resiliency with Spring Boot and Resilience4j (opens in a new tab)](https://symphony.is/about-us/blog/service-resiliency-with-spring-boot-and-resilience4j)
+- [Circuitbreaker를 사용한 장애 전파 방지](https://oliveyoung.tech/blog/2023-08-31/circuitbreaker-inventory-squad/)
+
+<br/>
+
+
+
+Feign Client
+
+- https://resilience4j.readme.io/docs/feign
 
 <br/>
 
@@ -376,7 +398,127 @@ CircuitBreaker circuitBreaker = registry.circuitBreaker("jsonplaceholder");
 
 ## Feign Client
 
+참고 : https://resilience4j.readme.io/docs/feign<br/>
 
+먼저 아래와 같은 내용의 interface 를 작성해줍니다. 가급적 spring 을 타지 않고 reslilence4j 에서 지원하는 라이브러리만으로 코드를 구성하면 아래와 같은 모습입니다.<br/>
+
+
+
+**JsonPlaceholderClient.java**<br/>
+
+```java
+// ...
+
+import feign.Param;
+import feign.RequestLine;
+
+// ...
+
+public interface JsonPlaceholderClient {
+  @RequestLine("GET /posts")
+  List<PostDto> getPosts();
+
+  @RequestLine("GET /posts/{id}")
+  PostDto getPostById(@Param("id") Long id);
+
+  @RequestLine("GET /posts/{postId}/comments")
+  List<CommentDto> getCommentsByPostId(@Param("postId") Long postId);
+
+  @RequestLine("GET /comments/?postId={postId}")
+  List<CommentDto> getCommentsByPostIdQuery(@Param("postId") Long postId);
+
+  @RequestLine("POST /posts")
+  PostDto createPost(PostDto post);
+
+  @RequestLine("PUT /posts/{id}")
+  PostDto updatePost(@Param("id") Long id, PostDto postDto);
+
+  @RequestLine("PATCH /posts/{id}")
+  PostDto patchPost(@Param("id") Long id, PostDto postDto);
+
+  @RequestLine("DELETE /posts/1")
+  PostDto deletePost(@Param("id") Long id);
+}
+```
+
+<br/>
+
+
+
+**JsonPlaceholderClientConfig.java**
+
+이번에는 위에서 만들었던 `JsonPlaceholderClient` 타입의 Bean 을 만들어봅니다. Circuit Breaker 섹션에서도 설명했듯 꼭 Bean 으로 등록하지 않고 일반 자바 객체로 생성해도 문제가 되는 것은 아닙니다. 다만 스프링을 사용하고 있다면 특정 객체의 재사용성과 유지보수가 잘되도록 하려면 의존성을 주입 받아서 사용하도록 코드를 작성하는게 권장되기에 자바 Bean 으로 등록하는 것이 권장됩니다.<br/>
+
+```java
+// ...
+
+import feign.gson.GsonDecoder;
+import feign.gson.GsonEncoder;
+import io.example.feign.mvc_feign_circuit_breaker_example.external.JsonPlaceholderClient;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.feign.FeignDecorators;
+import io.github.resilience4j.feign.Resilience4jFeign;
+import io.github.resilience4j.ratelimiter.RateLimiter;
+
+// ...
+
+@Configuration
+public class JsonPlaceholderClientConfig {
+  @Bean
+  public JsonPlaceholderClient jsonPlaceholderClient(
+      // (1)
+      @Qualifier("jsonPlaceholderCircuitBreaker") CircuitBreaker jsonPlaceholderCircuitBreaker,
+      @Qualifier("jsonPlaceholderRateLimiter") RateLimiter jsonPlaceholderRateLimiter
+  ){
+    // (2)
+    FeignDecorators feignDecorators = FeignDecorators.builder()
+        .withCircuitBreaker(jsonPlaceholderCircuitBreaker)
+        .withRateLimiter(jsonPlaceholderRateLimiter)
+        .build();
+
+    // (3)
+    return Resilience4jFeign
+        .builder(feignDecorators) // (3.1)
+        .decoder(new GsonDecoder()) // (3.2)
+        .encoder(new GsonEncoder()) // (3.3)
+        // (3.4)
+        .target(JsonPlaceholderClient.class, "https://jsonplaceholder.typicode.com/");
+  }
+}
+```
+
+<br/>
+
+(1)
+
+- 미리 Bean 으로 등록해둔 CircuitBreaker, RateLimiter 를 의존성 주입받습니다.
+
+(2)
+
+- CircuitBreaker, RateLimiter 를 Decorator 객체에 감싸서 래핑합니다.
+- Resilience4j 라이브러리는 이렇게 Decorator 객체에 감싸서 래핑하는 구문들이 많습니다.
+
+(3) 
+
+- Resilience4JFeign 의 builder() 메서드를 통해 FeignClient 객체를 생성합니다.
+
+(3.1)
+
+- (2) 에서 바인딩해둔 circuitBreaker, rateLimiter 를 감싸고 있는 FeignDecorator 를 기반으로 Builder 객체를 생성합니다.
+
+(3.2)
+
+- decoder 는 GsonDecoder() 를 사용하도록 지정했습니다.
+- Jackon-databind 의 JsonDecoder() 를 사용해도 좋지만, 나중에 Reactive Feign 을 사용할 때에는 Jackson 라이브러리 자체를 사용하지 못하기에 GsonDecoder() 를 기본 옵션으로 사용하는 것도 나쁘지 않습니다.
+
+(3.3)
+
+- encoder 는 GsonEncoder() 를 사용하도록 지정했습니다.
+- Jackon-databind 의 JsonEncoder() 를 사용해도 좋지만, 나중에 Reactive Feign 을 사용할 때에는 Jackson 라이브러리 자체를 사용하지 못하기에 GsonEncoder() 를 기본 옵션으로 사용하는 것도 나쁘지 않습니다.
+
+(3.4)
+
+- JsonPlaceholderClient 타입을 implements 하며, FeignClient 기능을 결합한 별도의 프록시 객체를 return 합니다.
 
 
 
