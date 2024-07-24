@@ -25,7 +25,7 @@ leetcode/string
 
 
 
-## [49. Group Anagrams](https://leetcode.com/problems/group-anagrams/)
+## [49. Group Anagrams](https://leetcode.com/problems/group-anagrams/) (Medium)
 
 ### Link
 
@@ -100,4 +100,117 @@ class Solution:
             ans[tuple(count)].append(s)
         return ans.values()
 ```
+
+
+
+## [767. Reorganize String](https://leetcode.com/problems/reorganize-string/) (Medium)
+
+### Link
+
+- https://leetcode.com/problems/reorganize-string
+
+<br/>
+
+
+
+### 요약
+
+- (1) : 각 문자 당 출현 횟수를 카운팅한다.
+- (2) : (1) 에서 구한 카운팅인 char\_counts 에서 최대 출현 횟수, 최대 출현 문자를 구한다.
+- (3) : 최대 갯수가 문자열의 전체 크기 / 2 보다 크다면 더 시도해볼 필요가 없다. 
+  - 절반이상을 최대출현 문자가 차지하고 있기에 블가능한 케이스다.
+- (4) : 최대 출현 문자(=letter)를 index = 0 부터 한 칸 건너 하나씩(index += 2) 배치
+- (5) : 나머지 문자들 각각을 index = 1 부터 한 칸 건너 하나씩 (index += 2) 배치
+
+<br/>
+
+
+
+### 문제
+
+Given a string `s`, rearrange the characters of `s` so that any two adjacent characters are not the same.
+
+Return *any possible rearrangement of* `s` *or return* `""` *if not possible*.
+
+ 
+
+**Example 1:**
+
+```
+Input: s = "aab"
+Output: "aba"
+```
+
+**Example 2:**
+
+```
+Input: s = "aaab"
+Output: ""
+```
+
+ 
+
+**Constraints:**
+
+- `1 <= s.length <= 500`
+- `s` consists of lowercase English letters.
+
+<br/>
+
+
+
+### 풀이
+
+```python
+class Solution:
+    def reorganizeString(self, s: str) -> str:
+        ## 각 문자 당 출현 횟수를 카운팅한다. 
+        char_counts = Counter(s)
+        max_count, letter = 0, ''
+
+        ## 최대 출현 횟수, 최대 출현 문자를 char_counts 에서 구한다.
+        for char, count in char_counts.items():
+            if count > max_count:
+                max_count = count
+                letter = char
+
+        ## 최대 갯수가 문자열의 전체크기 / 2 보다 크다면 더 시도해볼 필요가 없다.
+        if max_count > (len(s) + 1) // 2: 
+            return ""
+        
+        ans = [''] * len(s)
+        index = 0
+
+        # letter : most frequent letter
+        # 가장 흔히 출현하는 문자(=letter)를 한칸 건너 하나씩(index += 2) 배치
+        while char_counts[letter] != 0:
+            ans[index] = letter
+            index += 2
+            char_counts[letter] -= 1
+        
+        # 나머지 문자들을 index = 1 에서부터 한칸 건너 하나씩(index += 2) 배치
+        for char, count in char_counts.items():
+            while count > 0:
+                if index >= len(s): # index 가 문자열의 길이를 넘어서면 1로 초기화
+                                    # 1 부터 시작하는 이유는 위에서 most frequent letter 를 
+                                    # 0 부터 배치했기에 그 다음 위치인 1 부터 시작하는 것임
+                    index = 1
+                
+                # count 횟수만큼 index 위치마다 char 를 지정해준다
+                ans[index] = char
+                index += 2
+                count -= 1
+        
+        return ''.join(ans)
+```
+
+<br/>
+
+
+
+
+
+
+
+
 
