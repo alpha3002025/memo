@@ -157,6 +157,116 @@ class CustomUserDetailsProvider : UserDetailsManager {
 
 
 
+## 객체간의 상호작용
+
+![](./img/user-management---userdetails-userdetailsservice-userdetailsmanager/3.png)
+
+<br/>
+
+
+
+## UserDetails
+
+UserDetails 는 한국어로 표현하면 '사용자 상세 정보'라고 표현할 수 있습니다.<br/>
+
+스프링 시큐리티에서는 UserDetails 인터페이스를 통해 사용자를 표현하며 애플리케이션 레벨에서 개발자가 직접 UserDetails 인터페이스를 구현해야 합니다.<br/>
+
+```java
+package org.springframework.security.core.userdetails;
+
+import java.io.Serializable;
+import java.util.Collection;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
+// ...
+
+public interface UserDetails extends Serializable {
+
+	Collection<? extends GrantedAuthority> getAuthorities();
+
+	String getPassword();
+
+	String getUsername();
+
+	default boolean isAccountNonExpired() {
+		return true;
+	}
+
+	default boolean isAccountNonLocked() {
+		return true;
+	}
+
+	default boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	default boolean isEnabled() {
+		return true;
+	}
+
+}
+```
+
+getAuthorities() 
+
+- GrantedAuthority 로 표현한 애플리케이션 사용자의 권한들의 컬렉션입니다.
+- GrantedAuthority 는 애플리케이션 사용자가 수행할 수 있는 작업을 표현할 수 있는 객체입니다.
+
+getUsername(), getPassword()
+
+- getUsername() : 사용자의 Id 를 반환합니다.
+- getPassword() : 사용자의 Password 를 반환합니다.
+
+<br/>
+
+다음 메서드 들은 return true(기본값) 로 정의해서 사용자를 비활성화 할 수 있습니다. 별도의 제한이 없다면 true 를 반환하도록 지정하며, default 메서드로 true 를 반환하도록 기본 정의가 되어 있기에 재정의를 하지 않을 경우 사용하지 않는 것으로 간주합니다.
+
+- isAccountNonExpired() : boolean
+- isAccountNonLocked() : boolean
+- isCredentialsNonExpired() : boolean
+- isEnabled() : boolean
+
+메서드의 네이밍 컨벤션이 `...non` 으로 지정되어 있어서 의미상으로 혼동이 많이 되는 메서드이기에 주의가 필요합니다. 
+
+<br/>
+
+
+
+### UserDetails, User, Member, MemberEntity
+
+**User 클래스**<br/>
+
+UserDetails 객체를 생성하기 위해 스프링 시큐리티에서 제공되는 User 라고 하는 클래스는 빌더 형식으로 제공됩니다. 이 빌더를 사용하기 위해서는 username, password 는 꼭 필요합니다. 그런데 이렇게 내장으로 제공되는 User 클래스를 사용하는 방식보다는 UserDetails 를 implements 하는 Member 클래스를 별도로 정의해서 사용하는 방식이 자주 쓰입니다.<br/>
+
+<br/>
+
+**Member, MemberEntity**<br/>
+
+User, UserDetails 라고 하는 클래스가 스프링 시큐리티에서 이미 제공되고 있기에 실무에서는 가급적 Member, MemberEntity 라는 이름의 별도의 객체를 선언해서 사용하는 편입니다.<br/>
+
+<br/>
+
+**MemberEntity, Member, UserDetails**<br/>
+
+일반적으로 UserDetails 를 implements 하도록 정의하는 Member 클래스는 표현 계층으로만 사용하는 것이 좋습니다. 영속성 계층에서 사용자를 표현하는 것은 `MemberEntity` 라는 별도의 엔티티를 만들어서 가급적 스프링시큐리티와의 의존성이 없는 독립적인 데이터베이스 엔티티로 선언하는 것이 권장됩니다. 
+
+- Member implements UserDetails : 표현 계층에서 스프링시큐리티를 연동
+- MemberEntity : 영속성 계층에서 스프링 시큐리티에 의존하지 않고 독립적인 객체로 사용
+
+<br/>
+
+
+
+### DummyUser 에 대한 테스트 작성
+
+
+
+
+
+
+
 ## GrantedAuthority
 
 GrantedAuthority 는 여러가지 권한의 집합입니다. GrantedAuthority 는 권한이 하나도 없거나 여러 권한을 가질 수 있습니다. GrantedAuthority 는 interface 타입이며 내부 정의는 아래와 같습니다.
@@ -246,9 +356,7 @@ public final class SimpleGrantedAuthority implements GrantedAuthority {
 
 <br/>
 
-
-
-## Authority vs Role
+### Authority vs Role
 
 Authority 는 유연함을 목적으로 하며, Role 은 단순함을 목적으로 합니다.
 
@@ -316,120 +424,6 @@ hasAuthority("ROLE\_ADMIN") 의 의미는 hasRole("ADMIN") 과 동일한 의미�
 <br/>
 
 
-
-## 객체간의 상호작용
-
-![](./img/user-management---userdetails-userdetailsservice-userdetailsmanager/3.png)
-
-<br/>
-
-
-
-## UserDetails
-
-UserDetails 는 한국어로 표현하면 '사용자 상세 정보'라고 표현할 수 있습니다.<br/>
-
-스프링 시큐리티에서는 UserDetails 인터페이스를 통해 사용자를 표현하며 애플리케이션 레벨에서 개발자가 직접 UserDetails 인터페이스를 구현해야 합니다.<br/>
-
-```java
-package org.springframework.security.core.userdetails;
-
-import java.io.Serializable;
-import java.util.Collection;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-
-// ...
-
-public interface UserDetails extends Serializable {
-
-	Collection<? extends GrantedAuthority> getAuthorities();
-
-	String getPassword();
-
-	String getUsername();
-
-	default boolean isAccountNonExpired() {
-		return true;
-	}
-
-	default boolean isAccountNonLocked() {
-		return true;
-	}
-
-	default boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	default boolean isEnabled() {
-		return true;
-	}
-
-}
-```
-
-getAuthorities() 
-
-- GrantedAuthority 로 표현한 애플리케이션 사용자의 권한들의 컬렉션입니다.
-- GrantedAuthority 는 애플리케이션 사용자가 수행할 수 있는 작업을 표현할 수 있는 객체입니다.
-
-getUsername(), getPassword()
-
-- getUsername() : 사용자의 Id 를 반환합니다.
-- getPassword() : 사용자의 Password 를 반환합니다.
-
-<br/>
-
-다음 메서드 들은 return true(기본값) 로 정의해서 사용자를 비활성화 할 수 있습니다. 별도의 제한이 없다면 true 를 반환하도록 지정하며, default 메서드로 true 를 반환하도록 기본 정의가 되어 있기에 재정의를 하지 않을 경우 사용하지 않는 것으로 간주합니다.
-
-- isAccountNonExpired() : boolean
-- isAccountNonLocked() : boolean
-- isCredentialsNonExpired() : boolean
-- isEnabled() : boolean
-
-메서드의 네이밍 컨벤션이 `...non` 으로 지정되어 있어서 의미상으로 혼동이 많이 되는 메서드이기에 주의가 필요합니다. 
-
-<br/>
-
-
-
-### UserDetails, User, Member, MemberEntity
-
-**User 클래스**<br/>
-
-UserDetails 객체를 생성하기 위해 스프링 시큐리티에서 제공되는 User 라고 하는 클래스는 빌더 형식으로 제공됩니다. 이 빌더를 사용하기 위해서는 username, password 는 꼭 필요합니다. 이 방식보다는 UserDetails 를 implements 하는 Member 클래스를 별도로 정의해서 사용하는 방식이 자주 쓰입니다.<br/>
-
-<br/>
-
-**Member, MemberEntity**<br/>
-
-User, UserDetails 라고 하는 클래스가 스프링 시큐리티에서 이미 제공되고 있기에 실무에서는 가급적 Member, MemberEntity 라는 이름의 별도의 객체를 선언해서 사용하는 편입니다.<br/>
-
-<br/>
-
-**MemberEntity, Member, UserDetails**<br/>
-
-일반적으로 UserDetails 를 implements 하도록 정의하는 Member 클래스는 표현 계층으로만 사용하는 것이 좋습니다. 영속성 계층에서 사용자를 표현하는 것은 `MemberEntity` 라는 별도의 엔티티를 만들어서 가급적 스프링시큐리티와의 의존성이 없는 독립적인 데이터베이스 엔티티로 선언하는 것이 권장됩니다. 
-
-- Member implements UserDetails : 표현 계층에서 스프링시큐리티를 연동
-- MemberEntity : 영속성 계층에서 스프링 시큐리티에 의존하지 않고 독립적인 객체로 사용
-
-<br/>
-
-
-
-### UserDetails 만들어보기
-
-to be continue. ..
-
-스프링 시큐리티 라이브러리에서 제공하는 빌더를 활용<br/>
-
-물론 빌더만 활용하면 필드가 빠지거나 누락되는 부분이 생기기에 빌더 패턴 역시 팩토리 메서드로 따로 구현해둘것
-
-
-
-### DummyUser 에 대한 테스트 작성
 
 
 
