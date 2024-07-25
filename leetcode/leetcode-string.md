@@ -208,6 +208,126 @@ class Solution:
 
 
 
+## [22. Generate Parentheses](https://leetcode.com/problems/generate-parentheses/) (Medium) / (1) Recursive
+
+- 어제 회사에서 일하기 전에 문제 읽고 일할 때 일하다말고 힘빠졌을 때 틈틈히 풀이법을 떠올리면서 하루를 보내다가 근무시간 끝난 후 10분동안 문제 풀때 풀렸다.
+
+<br/>
+
+
+
+### Link 
+
+- https://leetcode.com/problems/generate-parentheses/
+
+<br/>
+
+
+
+### 요약
+
+- list 를 stack 처럼 사용해서 가장 마지막 요소를 추가(append)하거나 빼는(pop) 방식으로 연산을 한다.
+
+- 리스트가 완성되면 그 리스트는 문자열로 바꾼 후 ans = \[\] 에 넣어준다.
+- list 는 acc(누적, accumulate)하는 역할로 사용했다.
+- 항상 그렇듯 재귀 돌릴때 나는 `acc` 변수를 사용하면 풀린다.
+- 재귀 시에 의사 결정 트리를 만들 때 아래의 구문이 정말 많이 쓰인다.
+  - acc.append("(")
+  - recur (acc, left + 1, right)
+  - acc.pop()
+
+<br/>
+
+
+
+### 문제
+
+Given `n` pairs of parentheses, write a function to *generate all combinations of well-formed parentheses*.
+
+ 
+
+**Example 1:**
+
+```
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+```
+
+**Example 2:**
+
+```
+Input: n = 1
+Output: ["()"]
+```
+
+ 
+
+**Constraints:**
+
+- `1 <= n <= 8`
+
+<br/>
+
+
+
+### 풀이
+
+```python
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        ans = []
+
+        def recur(acc, left, right):
+            if n*2 == len(acc):
+                ans.append("".join(acc))
+            
+            if left < n:
+                acc.append("(")
+                recur(acc, left+1, right)
+                acc.pop()
+
+            if right < left:
+                acc.append(")")
+                recur(acc, left, right+1)
+                acc.pop()
+
+        recur([], 0, 0)
+
+        return ans
+```
+
+<br/>
+
+
+
+## [22. Generate Parentheses](https://leetcode.com/problems/generate-parentheses/) (Medium) / (2) Divide and Conquer
+
+### Link
+
+<br/>
+
+
+
+### 요약
+
+<br/>
+
+
+
+### 문제
+
+<br/>
+
+
+
+### 풀이
+
+<br/>
+
+
+
+
+
 
 
 
