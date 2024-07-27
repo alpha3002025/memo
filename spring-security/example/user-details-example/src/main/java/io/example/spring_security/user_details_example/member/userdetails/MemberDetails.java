@@ -3,24 +3,25 @@ package io.example.spring_security.user_details_example.member.userdetails;
 import io.example.spring_security.user_details_example.member.entity.MemberEntity;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
 public class MemberDetails implements UserDetails {
   private final MemberEntity memberEntity;
-  @Builder(builderClassName = "MemberEntityBuilder", builderMethodName = "entityBuilder")
+  @Builder(builderClassName = "MemberEntityBuilder", builderMethodName = "fromEntityBuilder")
   public MemberDetails(MemberEntity memberEntity){
     this.memberEntity = memberEntity;
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    // TODO
-    return List.of(()->"ROLE_READ", () -> "ROLE_CREATE");
+    return Arrays.stream(memberEntity.getAuthorities().split(","))
+        .map(authority -> new SimpleGrantedAuthority(authority))
+        .collect(Collectors.toList());
   }
 
   @Override

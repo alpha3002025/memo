@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MemberDetailsFactory {
-  public MemberDetails of(MemberEntity memberEntity){
-    return
+  public MemberDetails of (MemberEntity memberEntity){
+    return MemberDetails.fromEntityBuilder()
+        .memberEntity(memberEntity)
+        .build();
   }
 }
