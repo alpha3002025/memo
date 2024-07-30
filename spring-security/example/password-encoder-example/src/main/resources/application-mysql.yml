@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://127.0.0.1:23306/security_example?characterEncoding=UTF-8&serverTimezone=UTC&rewriteBatchedStatements=true
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: test1357
+      schema: security_example
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true

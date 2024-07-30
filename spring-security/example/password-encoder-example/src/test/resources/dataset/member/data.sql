@@ -1,0 +1,2 @@
+insert into member(email, password, authorities) values ('aaa@email.com', 'aaaaaaaa', 'ROLE_USER,ROLE_ADMIN,ROLE_CREATE,ROLE_READ,ROLE_UPDATE,ROLE_DELETE');
+insert into member(email, password, authorities) values ('bbb@email.com', 'bbbbbbbb', 'ROLE_USER,ROLE_READ,ROLE_CREATE');
