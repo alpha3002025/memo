@@ -10,7 +10,64 @@ AuthenticationManager, AuthenticationProvider, ProviderManager, Authentication, 
 
 <br/>
 
+AuthenticationManager 에서는 여러 종류의 AuthenticationProvider 들을 List 로 가지고 있습니다. 그리고 이 AuthenticationProvider 들을 모아둔 List 를 순회하면서 이 중 지원되는(supports()) 되는 AuthenticationProvider 를 만나면 이 AuthenticationProvider 가 authenticate() 메서드를 호출합니다.<br/>
 
+```java
+@Component
+@RequiredArgsConstructor
+public class CustomAuthenticationProvider implements AuthenticationProvider {
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    
+    @Override
+    public Authentication authenticate(Authentication authentication)
+        throws AuthenticationException {
+        String username = authentication.getName();
+        String password = authentication.getCredentials().toString(); // password
+        UserDetails user = userDetailsService.loadUserByUsername(username);
+        
+        if(passwordEncoder.matches(password, user.getPassword())){
+            return new UsernamePasswordAuthenticationToken(
+                username, password, user.getAuthorities()
+            );
+        }
+        
+        throw new BadCredentialsException("credential exception");
+    }
+    
+    @Override
+    public boolean supports(Class <?> authentication){
+        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+    }
+}
+```
+
+직접 사용자가 정의한 AuthenticationProvider 가 없다면, Spring Security 는 SecurityFilterChain 에 등록한 UserDetailsService 의 loadUserByUsername 을 통해 사용자 정보를 UserDetails 객체로 가져옵니다. 그리고 이 UserDetails 를 기반으로 Request로 전달받은 Password 와 UserDetailsService 에서 가져온 Password 를 비교하며, 이때 암호화된 문자열은 PasswordEncoder 를 통해서 복호화를 해서 비교합니다. <br/>
+
+이때 Password가 올바르다면 Authentication 라는 추상타입으로 인증 객체를 return 합니다. Authentication 추상타입에 대한 구체타입으로는 대표적으로 UsernamePasswordAuthenticationToken 이 있습니다.<br/>
+
+만약 위의 코드 처럼 AuthenticationProvider 를 직접 정의했다면, 직접 UserDetailsService 의 구현체를 의존성 주입한 후 비즈니스 로직에 맞게 작성된 loadUserByUsername(username) 을 호출해서 UserDetails 객체를 얻어내도록 작성하며. 이 UserDetails의 Password 와 Request 의 Password 를 PasswordEncoder 를 통해 복호화해서 비교합니다. 이후 이 요청이 올바른 요청이라면 UsernamePasswordAuthenticationToken 같은 구체 타입으로 Authentication 객체를 리턴합니다.<br/>
+
+<br/>
+
+
+
+```java
+@RequiredArgsConstructor
+@Configuration
+public class SecurityConfig{
+    private final CustomAuthenticationProvider customAuthenticationProvider; // 직접 생성한 AuthenticationProvider 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authenticationProvider(customAuthenticationProvider);
+        return http.build();
+    }
+}
+```
+
+그리고 직접 정의한 AuthenticationProvider 는 HttpSecurity 라고 하는 SecurityFilterChain 객체를 만드는 빌더 객체의 `authenticationProvider(AuthenticationProvider)` 에 등록해서 사용가능합니다.<br/>
+
+<br/>
 
 
 
@@ -74,7 +131,15 @@ Principal interface 에는 많은 추상메서드가 있지만, 그 중 가장 �
 
 ## AuthenticationManager, AuthenticationProvider
 
+AuthenticationManager 에서는 여러 종류의 AuthenticationProvider 들을 List 로 가지고 있습니다. 그리고 이 AuthenticationProvider 들을 모아둔 List 를 순회하면서 이 중 지원되는(supports()) 되는 AuthenticationProvider 를 만나면 이 AuthenticationProvider 가 authenticate() 메서드를 호출합니다.<br/>
+
+
+
 ![](./img/authentication-manager--athentication-provider--authentication--principal/8.png)
+
+<br/>
+
+
 
 ### AuthenticationManager
 
@@ -177,43 +242,59 @@ public class SecurityConfig{
 
 ## 스프링 시큐리티 코드 살펴보기
 
+앞에서 정리했던 내용을 요약해보면 AuthenticationManager 와 AuthenticationProvider 의 관계는 이렇습니다.
 
+- AuthenticationManager 에서는 여러 종류의 AuthenticationProvider 들을 List 로 가지고 있으며, 이 List 를 순회하면서 이 중 지원되는(supports()) 되는 AuthenticationProvider 를 만나면 이 AuthenticationProvider 가 authenticate() 메서드를 호출한다
+- AuthenticationProvider 가 주로 하는 일은 UserDetailsService 내의 loadUserByUsername(): Authentication 메서드를 호출하
+
+<br/>
+
+
+
+AuthenticationProvider interface 는 다음과 같이 두 가지의 메서드를 지원합니다.
+
+- authenticate(Authentication) : Authentication
+- supports (Class \<?\> authentication) : boolean
 
 ![](./img/authentication-manager--athentication-provider--authentication--principal/1.png)
 
+<br/>
 
 
 
-
-
+AuthenticationProvider 의 구체타입은 종류가 많습니다. 이 중 가장 대표적인 AuthenticationProvider 는 AbstractUserDetailsAuthenticationPRivicer, DaoAuthenticationProvider 가 있습니다.
 
 ![](./img/authentication-manager--athentication-provider--authentication--principal/2.png)
 
+<br/>
 
 
 
+AuthenticationManager interface 의 구체타입으로는 대표적으로 ProviderManager 가 있습니다.
 
 ![](./img/authentication-manager--athentication-provider--authentication--principal/3.png)
 
+<br/>
 
 
 
-
-
+AuthenticationManager 의 구체타입인 ProviderManager 내에는 아래 코드처럼 `List<AuthenticationProvider> providers` 와 같이 여러 종류의 AuthenticationProvider 들을 List 로 가지고 있는 것을 확인 가능합니다.
 
 ![](./img/authentication-manager--athentication-provider--authentication--principal/4.png)
 
+<br/>
 
 
 
-
-
+이 Provider 들을 차례로 interator 를 이용해 순회하면서 supports() 메서드를 통해 지원되는지를 체크합니다. 그리고 supports() 의 결과값이 true 일 경우 해당 Provider 는 지원이 되는(사용자가 등록한) Provider 들 중 하나라고 판단해서 해당 Provider 의 authenticate() 메서드를 호출합니다. 요즘 상용 서비스들은 어떤 인증을 할때 B2C 등의 서비스에서는 지문인증, 홍채인식, 안면 인식을 지원하는데, 이렇게 지원되는 인증 방식을 AuthenticationProvider 를 통해 제공하게 됩니다.
 
 ![](./img/authentication-manager--athentication-provider--authentication--principal/5.png)
 
+<br/>
 
 
 
+provider.authenticate() 를 통해서 얻어온 `Authentication result` 값이 올바르지 않다면 부모 Provider 객체의 authenticate를 호출하도록 정의되어 있습니다.
 
 ![](./img/authentication-manager--athentication-provider--authentication--principal/6.png)
 
