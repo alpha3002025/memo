@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+  sample-redis:
+    image: redis:7.0.2-alpine
+    command: redis-server --port 6379
+    #    container_name: redis-temp
+    hostname: redis-normal
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - 6379:6379
+    links:
+      - sample-redis-commander
+    networks:
+      - sample-network
+  sample-redis-commander:
+    image: rediscommander/redis-commander:latest
+    # container_name: redis-commander
+    hostname: redis-commander
+    restart: always
+    environment:
+      - REDIS_HOSTS=redis-normal
+    #      - REDIS_HOST=redis-normal:redis:16379
+    ports:
+      - 38081:8081
+networks:
+  sample-network:
+#    external: true
+    driver: bridge
