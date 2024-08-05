@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
-public class ItemOrderChangingTest {
+public class ItemOrderChangingTest1 {
   public void assertList(List<Product> result, List<Product> expected){
     for(int i=0; i<result.size(); i++){
       assertThat(result.get(i).getProductIdx()).isEqualTo(expected.get(i).getProductIdx());
@@ -45,11 +45,9 @@ public class ItemOrderChangingTest {
     );
 
     MoveRequest moveRequest1 = MoveRequest.of(2, Direction.DOWN,
-        setOf(
-          Stream.of(
-              Request.of(2L, 2),
-              Request.of(3L, 3)
-          )
+        Arrays.asList(
+            Request.of(2L, 2),
+            Request.of(3L, 3)
         )
     );
 
@@ -103,11 +101,9 @@ public class ItemOrderChangingTest {
     );
 
     MoveRequest moveRequest1 = MoveRequest.of(2, Direction.UP,
-        setOf(
-            Stream.of(
-                Request.of(3L, 3),
-                Request.of(4L, 4)
-            )
+        Arrays.asList(
+            Request.of(3L, 3),
+            Request.of(4L, 4)
         )
     );
 

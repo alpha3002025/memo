@@ -1,5 +1,6 @@
 package io.chagchagchag.item_moving.common;
 
+import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,5 +12,5 @@ import lombok.Getter;
 public class MoveRequest {
   Integer moveCnt;
   Direction direction;
-  Set<Request> items;
+  List<Request> items;
 }
