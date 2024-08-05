@@ -1,4 +1,4 @@
-package io.chagchagchag.item_moving.item_moving_1;
+package io.chagchagchag.item_moving.common;
 
 import java.util.Set;
 import lombok.AllArgsConstructor;

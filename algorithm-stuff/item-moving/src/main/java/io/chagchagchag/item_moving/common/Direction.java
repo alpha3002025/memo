@@ -1,4 +1,4 @@
-package io.chagchagchag.item_moving.item_moving_1;
+package io.chagchagchag.item_moving.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

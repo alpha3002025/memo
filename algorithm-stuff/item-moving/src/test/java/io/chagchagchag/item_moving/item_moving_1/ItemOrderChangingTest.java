@@ -2,6 +2,10 @@ package io.chagchagchag.item_moving.item_moving_1;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import io.chagchagchag.item_moving.common.Direction;
+import io.chagchagchag.item_moving.common.MoveRequest;
+import io.chagchagchag.item_moving.common.Product;
+import io.chagchagchag.item_moving.common.Request;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
