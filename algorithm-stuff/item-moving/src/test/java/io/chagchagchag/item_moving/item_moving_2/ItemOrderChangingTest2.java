@@ -6,6 +6,7 @@ import io.chagchagchag.item_moving.common.Direction;
 import io.chagchagchag.item_moving.common.MoveRequest;
 import io.chagchagchag.item_moving.common.Product;
 import io.chagchagchag.item_moving.common.Request;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -61,14 +62,29 @@ public class ItemOrderChangingTest2 {
     assertList(result1, expectedList1);
   }
 
+  /**
+   * moveUp 의 한계점 정의
+   * - 1) moveUp 은 moveCnt = 1 에 대해서만 연산을 수행한다.
+   * - 2) moveCnt = 2, 3, 4 ... 는 외부에서 moveUp을 몇번 호출하는지로 결정한다.
+   */
   public List<Product> moveUp(List<Product> input, MoveRequest request){
     Map<Integer, Integer> mapStartEnd = mapStartEnd(request.getItems());
+    List<Product> copy = new ArrayList<>(input.subList(0, input.size()));
 
     for(int start : mapStartEnd.keySet()){
       int len = mapStartEnd.get(start);
-      for(int i=0; i<len; i++){
+      for(int offset=0; offset<len; offset++){
         // start ~ start + len
+        int curr = start + offset;
+        int prev = curr - 1;
+        // 예외케이스 1 (상단 한계 도달, 나머지 요소들이 위로 계속해서 이동)
 
+        // 일반 케이스
+        if(curr == start + len -1){
+          copy.set(start-1, input.get(start+len-1));
+          continue;
+        }
+        copy.set(curr, input.get(prev));
       }
     }
     return null;
