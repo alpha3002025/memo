@@ -39,7 +39,7 @@
 
 ## Loki
 
-- Loki 는 Log 를 위한 DBMS다. (Distributor, Ingester 등 여러 컴포넌트 들의 집하베)
+- Loki 는 Log 를 위한 DBMS다. (Distributor, Ingester 등 여러 컴포넌트 들의 집합체)
 - Loki 는 전통적인 데이터베이스들과는 다르다.
 - 로그 특성에 맞게 시계열 데이터 저장에 특화되어 있다.
   - 로그 외에도 Label, Timestamp 를 통한 인덱싱 데이터 역시 함께 저장한다.
