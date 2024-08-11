@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: prometheus-grafana-example
+  config:
+    import:
+      - classpath:prometheus.yml
