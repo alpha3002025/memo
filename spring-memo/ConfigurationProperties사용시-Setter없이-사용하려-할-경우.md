@@ -26,11 +26,13 @@ public class SecurityJwtProperties {
 
 @Setter 대신 @ConstructorBinding 을 사용한다면 불변성을 유지하면서 Configuration 필드 주입이 가능해집니다.
 
+@ConfigigurationProperties 를 사용하면 final 필드를 사용할 수 있다는 사실도 기억해주시기 바랍니다. 주요 설정값과 관련된 필드들을 불변으로 유지할 수 있습니다.
+
 ```java
 @Getter
 @ConfigurationProperties(prefix = "security.jwt")
 public class SecurityJwtProperties {
-  private String key;
+  private final String key;
   @ConstructorBinding
   public SecurityJwtProperties(String key){
     this.key = key;
