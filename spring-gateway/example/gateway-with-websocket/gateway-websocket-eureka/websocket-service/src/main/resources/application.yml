@@ -2,5 +2,20 @@ spring:
   application:
     name: websocket-service
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA-SERVER:http://localhost:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+    registry-fetch-interval-seconds: 3
+    disable-delta: true
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
 server:
   port: 0
+
+broker:
+  relay:
+    host: ${BROKER_HOST:localhost}

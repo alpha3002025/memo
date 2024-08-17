@@ -8,7 +8,7 @@ spring:
           uri: lb://websocket-service
           order: 1
           predicates:
-            - Path=/websocket/**
+            - Path=/websocket-service/**
           filters:
             - RewritePath=/websocket-service/(?<segment>.*),/$\{segment}
 server:
