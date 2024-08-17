@@ -1,10 +1,10 @@
-package io.chagchagchag.example.gateway_websocket_eureka;
+package io.chagchagchag.example.websocket;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GatewayWebsocketEurekaApplicationTests {
+class WebSocketServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

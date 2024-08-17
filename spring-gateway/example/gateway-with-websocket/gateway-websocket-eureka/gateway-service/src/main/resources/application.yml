@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: websocket
+          uri: lb://websocket-service
+          order: 1
+          predicates:
+            - Path=/websocket/**
+          filters:
+            - RewritePath=/websocket-service/(?<segment>.*),/$\{segment}
+server:
+  port: 8080
