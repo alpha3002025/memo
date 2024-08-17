@@ -5,6 +5,7 @@ import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WebSocketController {
   private final ServerProperties serverProperties;
   private final SimpMessagingTemplate simpMessagingTemplate;
+  private final ServletWebServerApplicationContext serverApplicationContext;
 
   private final Random RANDOM = new Random();
 
@@ -31,8 +33,9 @@ public class WebSocketController {
   @MessageMapping("/incoming")
   @SendTo("/topic/outgoing")
   public String incoming(Message message){
+    int port = serverApplicationContext.getWebServer().getPort();
     log.info(String.format("메세지 수신 : %s", message));
-    return String.format("서버 port = %s, 메시지 = %s", serverProperties.getPort(), message.message());
+    return String.format("서버 port = %s, 메시지 = %s", port, message.message());
   }
 
   @Scheduled(fixedRate = 15000L)
