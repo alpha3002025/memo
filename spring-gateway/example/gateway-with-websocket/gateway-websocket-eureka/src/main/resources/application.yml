@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: gateway-websocket-eureka
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    region: default
+
