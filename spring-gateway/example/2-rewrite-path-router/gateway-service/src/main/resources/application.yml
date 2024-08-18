@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: gateway-service
+  config:
+    import:
+      - classpath:eureka-client-disabled.yml
+      - classpath:springdoc-enabled.yml
+  cloud:
+    gateway:
+      routes:
+        - id: member-service
+          uri: http://localhost:8090
+          predicates:
+            - Path=/member-service/**
+          filters:
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+server:
+  port: 8080

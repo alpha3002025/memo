@@ -1,0 +1,10 @@
+###
+POST http://localhost:8080/member/login
+Content-Type: application/json
+
+{
+  "email": "aaa@gmail.com",
+  "password": "aaaaa"
+}
+
+> {% client.global.set("authToken", response.body.token); %}

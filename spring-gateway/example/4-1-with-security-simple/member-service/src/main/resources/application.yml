@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: member-service
+  config:
+    import:
+      - classpath:eureka-client-disabled.yml
+      - classpath:springdoc-enabled.yml
+data:
+  springdoc-name: member-service
+server:
+  port: 8090
