@@ -1,6 +1,6 @@
 spring:
   application:
-    name: payment-api
+    name: order-service
 
 eureka:
   client:
@@ -8,4 +8,4 @@ eureka:
     fetch-registry: true
 
 server:
-  port: 8082
+  port: 8081
