@@ -1,10 +1,10 @@
-package io.chagchagchag.example.order_api_example;
+package io.chagchagchag.example.order;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OrderApiExampleApplicationTests {
+class OrderApplicationTests {
 
 	@Test
 	void contextLoads() {

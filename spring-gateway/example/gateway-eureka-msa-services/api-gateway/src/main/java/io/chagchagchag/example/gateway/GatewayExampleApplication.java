@@ -1,4 +1,4 @@
-package io.chagchagchag.example.gateway_example;
+package io.chagchagchag.example.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

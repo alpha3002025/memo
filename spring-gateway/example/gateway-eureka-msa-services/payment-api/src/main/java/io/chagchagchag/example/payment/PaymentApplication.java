@@ -1,13 +1,13 @@
-package io.chagchagchag.example.payment_api_example;
+package io.chagchagchag.example.payment;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PaymentApiExampleApplication {
+public class PaymentApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PaymentApiExampleApplication.class, args);
+		SpringApplication.run(PaymentApplication.class, args);
 	}
 
 }

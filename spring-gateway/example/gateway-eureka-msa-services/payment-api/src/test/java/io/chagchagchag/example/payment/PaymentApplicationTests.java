@@ -1,10 +1,10 @@
-package io.chagchagchag.example.gateway_example;
+package io.chagchagchag.example.payment;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GatewayExampleApplicationTests {
+class PaymentApplicationTests {
 
 	@Test
 	void contextLoads() {
