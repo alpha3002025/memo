@@ -12,6 +12,37 @@
 
 
 
+## 실행
+
+intellij
+
+- discovery-service 실행
+- gateway-service 실행
+- websocket-service 실행
+- 브라우저에서 http://localhost:8080/websocket-service/websocket.html 접속
+- connect 버튼 클릭 (ws://localhost:8080/websocket-service/websocket)
+- 브라우저 하나 더 열어서 http://localhost:8080/websocket-service/websocket.html 접속
+- connect 버튼 클릭 (ws://localhost:8080/websocket-service/websocket)
+- 메시지 Send 
+
+<br/>
+
+
+
+docker-compose
+
+- 준비중 (gradle jib, dockerhub)
+- cd 00.infrastructure && docker-compose up -d
+- 브라우저에서 http://localhost:8080/websocket-service/websocket.html 접속
+- connect 버튼 클릭 (ws://localhost:8080/websocket-service/websocket)
+- 브라우저 하나 더 열어서 http://localhost:8080/websocket-service/websocket.html 접속
+- connect 버튼 클릭 (ws://localhost:8080/websocket-service/websocket)
+- 메시지 Send 
+
+<br/>
+
+
+
 ## Screenshot
 
 ![](./img/gateway-eureka-websocket/2.png)
@@ -22,9 +53,44 @@
 
 ## 통신 흐름
 
+
+
 ![](./img/gateway-eureka-websocket/1.png)
 
 <br/>
+
+최초 접속은 websocket-service 내의 websocket.html 을 통해 접속합니다.<br/>
+
+- http://localhost:8080/websocket-service/websocket.html
+
+<br/>
+
+
+
+websocket.html 내의 connect 버튼을 누르면 
+
+- ws://localhost:8080/websocket-service/websocket 
+
+으로 websocket 접속 요청을 하게 되며, 접속요청이 성공적이라면 커넥션이 맺어지게 됩니다.<br/>
+
+
+
+이제 http://localhost:8080/websocket-service/websocket.html 내에서 `Send` 버튼을 클릭하면 메시지를 전송합니다.<br/>
+
+<br/>
+
+
+
+http://localhost:8080/websocket-service 
+
+- gateway 가 Router 로 매핑하고 있는 주소이며 외부에서 내부로 접속할때 Gateway에 요청하는 주소입니다.<br/>
+
+- Gateway 뒷단에서 개별 WAS 인스턴스를 ip 주소를 직접 입력해서 개별 접속할 경우에는 [http://localhost:{포트주소}/websocket.html]() 로 접속하면 됩니다.
+- (websocket-service 의 server.port를 바꿔주시면 됩니다.)<br/>
+
+<br/>
+
+
 
 
 
