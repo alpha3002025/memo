@@ -1,0 +1,7 @@
+
+### order-service
+GET http://localhost:8080/order-service/hello
+
+### payment-service
+GET http://localhost:8080/payment-service/hello
+
