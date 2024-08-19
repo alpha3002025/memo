@@ -69,32 +69,37 @@ Filter
 
 ## 예제 구성
 
-이번 예제에서는 아래와 같이 MSA 를 구성합니다.
+이번 문서에서는 예제를 두 종류로 구성합니다.
 
-- service-discovery
-- api-gateway
-- order-api
-- payment-api
-
-<br/>
-
-
-
-**실행**<br/>
-
-아래의 순서로 실행시켜주시면 됩니다.
-
-- service-discovery 실행 
-- api-gateway 실행
-- order-api, payment-api 실행 (두 WAS 실행 순서는 무관)
+- (1) : Discovery Server (Eureka Server) 없이 Gateway 와 MSA 를 연결한 버전
+  - api-gateway
+  - order-api
+  - payment-api
+- (2) : Discovery Server (Eureka Server) 와 함께 Gateway, MSA 를 연결한 버전
+  - service-discovery
+  - api-gateway
+  - order-api
+  - payment-api
 
 <br/>
 
 
 
-## service-discovery
+## (1) Discovery Server 없이 Gateway,MSA 연결
 
-### build.gradle.kts
+![](./img/gateway-concept-and-basic-example-with-eureka/2-first-example.png)
+
+### Github
+
+- https://github.com/chagchagchag/memo/tree/main/spring-gateway/example/gateway-non-eureka-msa-services
+
+<br/>
+
+
+
+### gateway-service
+
+#### build.gradle.kts
 
 ```kotlin
 plugins {
@@ -139,7 +144,7 @@ tasks.withType<Test> {
 
 
 
-### ServiceDiscoveryApplication
+#### ServiceDiscoveryApplication
 
 ```java
 package io.chagchagchag.example.service_discovery;
@@ -163,7 +168,7 @@ public class ServiceDiscoveryApplication {
 
 
 
-### application.yml
+#### application.yml
 
 ```yaml
 spring:
@@ -184,7 +189,7 @@ eureka:
 
 
 
-### 구동
+#### 구동
 
 intellij 에서 구동시키고 나서 브라우저에서 http://localhost:8761/eureka 로 접속해봅니다. 
 
