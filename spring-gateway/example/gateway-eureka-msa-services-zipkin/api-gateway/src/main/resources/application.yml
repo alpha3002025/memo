@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: order-service
+          uri: lb://order-service
+          order: 1
+          predicates:
+            - Path=/order-service/**
+          filters:
+            - RewritePath=/order-service/(?<path>.*),/$\{path}
+        - id: payment-service
+          uri: lb://payment-service
+          order: 1
+          predicates:
+            - Path=/payment-service/**
+          filters:
+            - RewritePath=/payment-service/(?<path>.*),/$\{path}
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+
+server:
+  port: 8080
