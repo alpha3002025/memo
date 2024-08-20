@@ -39,6 +39,13 @@ dependencies {
   implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
   implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
+  // zipkin
+  // spring 3.x 부터 deprecated
+//	implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+  implementation("io.micrometer:micrometer-tracing-bridge-brave")
+  implementation("io.zipkin.reporter2:zipkin-reporter-brave")
+  implementation("org.springframework.boot:spring-boot-starter-actuator")
+
   // springdoc
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
