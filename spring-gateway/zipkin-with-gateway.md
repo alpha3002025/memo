@@ -6,11 +6,27 @@ gateway가 아니더라도 일반적인 WAS에도 적용이 가능하지만, Gat
 
 ## 예제 github
 
+- Github Code : https://github.com/chagchagchag/memo/tree/main/spring-gateway/example/4-1-with-security-simple
+
+- 변경 내역 : https://github.com/chagchagchag/memo/commit/e60b8b54c8de7926efb87aee96bdfa7da4a3d70d
+
 
 
 ## 예제 시나리오
 
+![](./img/zipkin-with-gateway/0.png)
 
+예제 프로젝트에서는 Gateway 가 Security 를 통해 로그인 및 JWT 생성을 담당합니다.<br/>
+
+zkipkin 은 이 Gateway WAS 를 추적(tracing)합니다. <br/>
+
+zipkin 은 Spring WAS 내에 운영되는 프로세스가 아니라 별도의 프로세스로 구동됩니다. zipkin은 같은 인스턴스 내에 프로세스로 운영해도 되고, 물리적으로 떨어진 원격에 위치한 인스턴스 내에 운영해도 됩니다.<br/>
+
+zipkin 인스턴스는 docker-compose 로 구동할 수 있도록 문서에 docker-compose.yml 파일을 명시했습니다.<br/>
+
+이번 예제에는 payment-service, order-service 를 추가하지는 않았지만, 향후 payment-service, order-service 와 같은 MSA 가 운영될때에도 이 MSA 로부터의 호출을 zipkin 으로 관찰할 수 있습니다.<br/>
+
+<br/>
 
 
 
@@ -125,6 +141,14 @@ zipkin.tracing.endpoint
 
 - `http://localhost:9411/api/v2/spans` 를 지정해줬습니다.
 - localhost:9411 은 docker 로 로컬개발환경에 구동시킨 zipkin 인스턴스입니다.
+
+<br/>
+
+zipkin.tracing.sampling.probaility
+
+- 특정 엔드포인트에 대해 모든 요청에 대해 로그 및 메트릭을 샘플링(수집)하겠다는 의미입니다.
+- 1.0 이라는 것은 100번의 호출 중에 100번, 10번의 호출중에 10번을 호출하는 100%를 의미합니다.
+- 만약 0.3 으로 지정하면 100번의 호출 중에 30번, 10번의 호출 중에 3번을 호출하게되는 30%를 의미하게 됩니다.
 
 <br/>
 
