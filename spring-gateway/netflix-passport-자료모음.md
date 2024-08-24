@@ -1,0 +1,3 @@
+[Netflix 는 MSA 에서 어떻게 인증/인가를 처리할까: Netflix Passport](https://velog.io/@sheltonwon/MSA-Netfilx%EB%8A%94-MSA%EC%97%90%EC%84%9C-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%9D%B8%EC%A6%9D%EC%9D%B8%EA%B0%80%EB%A5%BC-%EC%B2%98%EB%A6%AC%ED%95%A0%EA%B9%8C-Netfilx-Passport)
+
+[MSA API Gateway 패턴에서의 인증/인가](https://velog.io/@sheltonwon/MSA-API-Gateway-%ED%8C%A8%ED%84%B4%EC%97%90%EC%84%9C%EC%9D%98-%EC%9D%B8%EC%A6%9D%EC%9D%B8%EA%B0%80)
