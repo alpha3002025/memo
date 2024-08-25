@@ -150,8 +150,15 @@ Actuator API<br/>
 ### Predicate
 
 - 어떤 요청에 대해 헤더, URI 패턴 등에 대해 조건값이 맞는지를 판단하는 조건식 역할을 하는 객체입니다.
-- 주로 application.ym 내의 `spring.cloud.routes[i].predicate` 에 정의합니다.
-- application.yml 에서의 자세한 사용 예는 글의 후반부 예제들을 확인해주시기 바랍니다.
+- Path, Host, Method 에 어떤 값이 왔을때 Gateway Filter 를 타게 할지를 결정하도록 하는 조건문같은 역할을 수행합니다.
+- 주로 application.ym 내의 `spring.cloud.routes[i].predicate` 에 정의합니다. 
+- Path의 `**`, `*` 표현식
+  - e.g. `Path=/order-service/**` :  `{uri}/order-service/{경로}` 에서  `/order-service`하위의 모든 Path 에 대해 Filter 를 적용하겠다는 의미입니다.
+  - e.g. `Path=/order-service/*` :  `{uri}/order-service/{경로}` 에서  `/order-service`하위의 첫번째 Path 에 대해 Filter 를 적용하겠다는 의미입니다.
+
+- Host, Query Parameter, Path Variable, Method 와 같은 REST API 의 주요 요청 형식에 대해 조건문을 만들어서 적용하는 것이 가능합니다.
+
+<br/>
 
 
 
@@ -397,7 +404,7 @@ spring:
       - id: order-service
         uri: http://localhost:8081
         predicates:
-          - Path=/order/**
+          - Path=/order-service/**
           - Host=**.reddit.com, **.instagram.com
   # ...
 ```
@@ -992,9 +999,51 @@ Response code: 200 (OK); Time: 16ms (16 ms); Content length: 15 bytes (15 B)
 
 Gateway 에 의해 추가된 헤더인 `Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document` 을 확인하실 수 있습니다.<br/>
 
+<br/>
+
+
+
 #### SecureHeaders 
 
 #### RewritePath
+
+RewritePath 는 지금까지 예제에서 자주 사용해온 개념입니다.<br/>
+
+GatewayService 내의 application.yml 이 아래와 같이 정의되어 있다고 해보겠습니다.
+
+```yaml
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: rewrite-path
+          uri: http://localhost:8081
+          order: 1
+          predicates:
+            - Path=/order-service/**
+          filters:
+            - RewritePath=/order-service/(?<path>.*),/$\{path}
+# ...
+```
+
+<br/>
+
+http 파일에서는 아래의 요청을 보내봅니다.
+
+```http
+### order-service
+GET http://localhost:8080/order-service/hello
+```
+
+<br/>
+
+이렇게 하면 200 OK 의 응답을 얻게 됩니다. 만약 RewritePath 를 사용하지 않는다면 Gateway 인 http://localhost:8080/ 으로 http://localhost:8080/order-service/hello 라는 요청이 왔을 때 Gateway는 http://localhost:8081/order-service/hello 로 요청을 라우팅합니다(요청을 보내줍니다). 이 경우 OrderApi.java 내에 @GetMapping 은 `@GetMapping("/order-service/hello")`으로 작성해야 요청이 매핑될수 있게 됩니다. 이렇게 작성할 경우 Gateway 가 매핑해주는 개별 MSA 내의 RequestMapping 에 Gateway 내의 설정을 따라서 정의해줘야 하기에 Gateway의 설정에 종속되어 자주 바뀌어야 한다는 단점이 있습니다. 즉 최악의 경우 Gateway 설정에 따라 모든 개별 MSA 가 재배포되야 하는 케이스가 생길 수 있다는 단점이 있습니다.<br/>
+
+만약 RewritePath 를 `/order-service/(?<path>.*),/$\{path}` 으로 정의하면 Gateway 인 http://localhost:8080/ 으로 http://localhost:8080/order-service/hello 라는 요청이 왔을 때 Gateway 는 http://localhost:8081/hello 로 요청을 라우팅합니다(요청을 보내줍니다). 이 경우 OrderApi.java 내에 @GetMapping 은 `@GetMapping("/hello")` 로 작성해야 요청이 매핑될 수 있게 됩니다. 이 경우 OrderApi.java 내에 @GetMapping 은 `@GetMapping("/hello")` 으로 작성하면 되기에 Gateway 가 매핑해주는 개별 MSA 내의 RequestMapping을 Gateway 내의 설정을 따라서 작성할 필요가 없습니다. 즉, Gateway 설정이 변경되어도 개별 MSA가 재배포되어야 하는 케이스는 생기지 않습니다.<br/>
+
+<br/>
+
+
 
 #### RewriteLocationResponseHeader 
 
