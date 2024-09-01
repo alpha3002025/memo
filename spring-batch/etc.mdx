@@ -1,0 +1,26 @@
+## etc - 기타 지식들
+
+## JobRepository
+
+>  참고자료 : [Spring Batch : JobRepository](https://ojt90902.tistory.com/775?category=959720)
+
+JobRepository 는 Database 에 Job, Step 에 대한 Instance 또는 Execution Instance, Context 그리고 Parameter 들을 Database 에 저장하거나, 수정, 조회, 삭제를 하는 역할을 담당합니다.<br/>
+
+우리가 JobRepository 를 선언하지도 않았고, `@EnableJpaRepositories` 에 직접 등록하지도 않았는데, JobRepository 를 사용할 수 있는 이유는 `@EnableBatchProcessing` 애노테이션 덕분입니다. `@EnableBatchProcessing` 애노테이션은 JobRepository 를 스프링 빈으로 등록합니다.<br/>
+
+만약 사용자 정의 JobRepository 를 사용하려 한다면, BatchConfigurer/BasicBatchConfigurer 를 implements 또는 extends 해서 사용하면 됩니다. JobRepository 는 내장 메모리(embedded), DB 용도로 설정 역시 따로 지정할 수 있습니다.<br/>
+
+<br/>
+
+
+
+**트랜잭션**<br/>
+
+- JobRepository 는 트랜잭션을 AOP 기술로 처리해주는데, 스프링의 `@Transactional` 이 아니라, Batch 내에서의 트랜잭션을 처리하는 별도의 AOP가 있습니다.
+- 트랜잭션 격리 수준은 Serializable (=가장 엄격한 수준)이며, 더 낮은 격리 수준으로 지정하는 것 역시 가능합니다.
+- 메타테이블의 Prefix (접두사) 를 벼경할 수 있습니다. 기본 값은 BATCH 입니다.
+
+
+
+<br/>
+
