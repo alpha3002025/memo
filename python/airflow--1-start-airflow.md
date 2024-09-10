@@ -1,4 +1,4 @@
-일로 크롤링을 해보거나 이런건 아닌데, 매일 아침마다 오늘 날씨를 검색해서 볼때마다 귀찮고, 관심있게 지켜보는 주식 종목들이 현재 EPS가 얼마이고 FCR(시가총액/영업활동현금흐름)은 어느 정도인지를 30분에 한번씩 카톡으로 쏴주는걸 만들어보려고 했다. 그런데 이 과정에서 airflow 를 접하게 됐는데, 젠킨스 설치하는걸 싫어했고 python 을 선호하는 나로서는 airflow가 마음에 들어서 airflow 관련 자료들을 찾아보기 시작했다.<br/>
+일로 크롤링을 해보거나 이런건 아닌데, 매일 아침마다 오늘 날씨를 검색해서 볼때(매일 우산 사는 나에게 반성...) 마다 귀찮고, 관심있게 지켜보는 주식 종목들이 현재 EPS가 얼마이고 FCR(시가총액/영업활동현금흐름)은 어느 정도인지를 30분에 한번씩 카톡으로 쏴주는걸 만들어보려고 했다. 그런데 이 과정에서 airflow 를 접하게 됐는데, 젠킨스 설치하는걸 싫어했고 python 을 선호하는 나로서는 airflow가 마음에 들어서 airflow 관련 자료들을 찾아보기 시작했다.<br/>
 
 절대 뭔가 커리어적으로 방향을 잡으려는게 아니라 간단하게 크롤링을 하고 python 코드를 실행하는 스프링 배치를 airflow 에서 조합하고 DAG 만드는걸 연습해보려는 용도로 시작했다.<br/>
 
@@ -18,6 +18,9 @@
 
 - [docker-compose.yml](https://airflow.apache.org/docs/apache-airflow/2.10.1/docker-compose.yaml)
 - https://airflow.apache.org/docs/apache-airflow/stable/docker-compose.yml
+- [Airflow 엄청 자세한 튜토리얼 #왕초심자용](https://velog.io/@clueless_coder/Airflow-%EC%97%84%EC%B2%AD-%EC%9E%90%EC%84%B8%ED%95%9C-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC-%EC%99%95%EC%B4%88%EC%8B%AC%EC%9E%90%EC%9A%A9)
+- [TIL - Airflow 예제](https://hongcana.tistory.com/124)
+- [Airflwo 를 활용해서 데이터 수집 자동화](https://www.biviz.ai/blog/read/?id=160)
 
 
 
