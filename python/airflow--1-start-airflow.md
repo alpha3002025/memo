@@ -291,5 +291,53 @@ volumes:
 
 # virtualenv 설정
 
+참고 : [virtualenv.pypa.io/latest/installation.html](https://virtualenv.pypa.io/en/latest/installation.html) <br/>
+
+## virtualenv 설치
+
+```python
+# 만약 현재 로그인한 사용자에 대해서만 virtualenv 를 설치하려 할 경우
+python -m pip install --user virtualenv
+# 상관없이 전역으로 설치하려 할 경우
+python -m pip install virtualenv
+```
+
+공식 페이지 ([virtualenv.pypa.io/latest/installation.html](https://virtualenv.pypa.io/en/latest/installation.html)) 에서는 OS 에 직접 패키지를 설치할 때에는 실제로 영향을 끼칠수 있기 때문에 주의하라고 언급하고 있습니다.<br/>
 
 
+
+## 가상환경 생성
+
+```bash
+$ virtualenv hello
+```
+
+<br/>
+
+
+
+## 가상환경 진입
+
+```bash
+$ source Scripts/activate
+(hello)
+```
+
+<br/>
+
+
+
+## 가상환경에서 나오기
+
+```bash
+$ deactivate
+```
+
+<br/>
+
+
+
+# 크롤러 라이브러리 선택
+
+- beautifulesoup
+- selenium
