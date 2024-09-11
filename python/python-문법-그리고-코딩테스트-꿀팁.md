@@ -10,9 +10,9 @@ Java 등에 존재하는 getter/setter 로 값을 받아오고 접근하는 기�
 
 
 
-## 시간복잡도 줄이기
+# 시간복잡도 줄이기
 
-### readline() : 입력 속도를 빠르게 
+## readline() : 입력 속도를 빠르게 
 
 데이터를 입력받아야 하는 경우 가급적 sys 모듈의 readline() 이 효율적입니다.<br/>
 
@@ -388,7 +388,7 @@ print(data[1:][0][::2])
 
 
 
-## 표준 라이브러리들
+# 표준 라이브러리들
 
 코딩테스트시 필요 기능을 직접 구현할 경우 실행도중에 오류가 있는지, 효율성은 제대로 지켰는지 등등 검증이 많이 필요하게 됩니다. 코딩테스트 시 작성한 코드의 검증할 부분을 최소로 줄여야 시간낭비를 줄일 수 있습니다. 만약 표준 라이브러리를 사용하면 검증할 필요가 있는 부분들이 줄어들게 되어서 이런 문제들을 모두 해결할 수 있습니다.<br/>
 
@@ -1146,4 +1146,134 @@ list = [1, 2, 3]
 ```
 
 <br/>
+
+
+
+# 입출력
+
+백준온라인을 풀때 말고는 입출력함수를 쓸일은 없어서 가장 마지막에 정리했습니다.<br/>
+
+## readline()
+
+참고자료 :https://wikidocs.net/26<br/>
+
+
+
+데이터를 입력받아야 하는 경우 가급적 sys 모듈의 readline() 이 효율적입니다.<br/>
+
+input() 이라는 함수를 사용할수도 있겠지만, input() 보다는 readline() 이 효율적입니다.
+
+```python
+import sys
+data = sys.stdin.readline()
+```
+
+<br/>
+
+
+
+먼저 3085.dat 이라는 파일이 현재 같은 디렉터리 내에 있고 그 내용은 다음과 같습니다.<br/>
+
+```plain
+3
+CCP
+CCP
+PPC
+```
+
+<br/>
+
+
+
+이 것을 읽어들이는 것은 다음과 같이 할 수 있습니다.
+
+```python
+f = open("./3085.dat", "r")
+
+while True:
+    line = f.readline()
+    if not line: break
+    print(line)
+
+f.close()
+```
+
+<br/>
+
+
+
+이렇게 하면 출력결과가 다음과 같이 개행문자와 함게 나타납니다.
+
+```plain
+3
+
+CCP
+
+CCP
+
+PPC
+```
+
+<br/>
+
+
+
+만약 개행 문자(`\n`)를 제거하고 읽어들이고 싶다면 다음과 같이 strip() 함수를 사용해서 코드를 작성하면 됩니다.
+
+```python
+f = open("./3085.dat", "r")
+
+while True:
+    line = f.readline()
+    if not line: break
+    line = line.strip()
+    print(line)
+
+f.close()
+```
+
+<br/>
+
+
+
+## read()
+
+3085.dat 이라는 파일이 현재 같은 디렉터리 내에 있고 그 내용은 다음과 같습니다.<br/>
+
+```plain
+3
+CCP
+CCP
+PPC
+```
+
+<br/>
+
+
+
+read() 함수는 파일의 전체내용을 문자열로 리턴합니다.
+
+```python
+f = open("./3085.dat", "r")
+
+all_str = f.read()
+print(f"{all_str}")
+
+f.close()
+```
+
+<br/>
+
+
+
+출력결과
+
+```plain
+3
+CCP
+CCP
+PPC
+```
+
+
 
