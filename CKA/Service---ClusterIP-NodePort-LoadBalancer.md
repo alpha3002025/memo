@@ -41,7 +41,7 @@ Service 는 kubernetes API 중 일부이다. <br/>
 
 ![](./img/Service/3.png)
 
-etcd 에 저장된 노드들의 정보를 기반으로 통신을 하며 각 노드들에 위치한 kublet 에 iptables rule 작업을 요청한다.<br/>
+Service 는 etcd 에 저장된 노드들의 정보를 기반으로 통신을 하며 각 노드들에 위치한 kublet 에 iptables rule 작업을 요청한다.<br/>
 
 각 노드에 설치된 kubelet 은 kube-proxy 에 iptables rule 작업을 요청한다.<br/>
 
