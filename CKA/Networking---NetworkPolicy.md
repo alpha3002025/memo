@@ -162,13 +162,13 @@ Labels: ...
 ...
 
 Spec
-  PodSelector: app=web
+  PodSelector: app=web # app=web 에 대해 적용되어 있다.
   Allowing ingress traffic:
-  	To Port: 80/TCP
+  	To Port: 80/TCP # 80 포트에 적용되어 있음을 확인 가능하다.
   	From:
-  		NamespaceSelector: purpose=production
-  Not affecting egress traffic
-  Policy Types: Ingress
+  		NamespaceSelector: purpose=production # namespaceSelector 에는 purpose=production 이 지정됐다.
+  Not affecting egress traffic # egress 정책은 없다고 적혀있다.
+  Policy Types: Ingress # Ingress 가 잘 적용되어있다.
 
 
 ```
@@ -176,6 +176,51 @@ Spec
 <br/>
 
 
+
+테스트
+
+- purpose=production 에서는 app=web 으로 접근이 가능한지 확인
+- purpose=development 에서는 app=web으로 접근이 불가능하도록 잘 적용되었는지 확인
+
+<br/>
+
+
+
+```bash
+# 테스트를 위해 간단한 linux pod 를 testpod 라는 이름으로 띄운 후 그 안으로 접속해서 wget 또는 curl 요청을 app=web 으로 보내본다. linux pod 는 centos 이미지로 해도 되고 alpine 으로 해도 되는데, alpine 은 centos 에 비해 가볍기에 빠르게 설치되는 반면 가끔 wget 또는 curl 이 적용이 잘 안되는 경우가 있다. 따라서 가급적 시험장에서는 centos 를 선택하는 것이 좋은 선택이다. 
+
+# -n dev 를 주어서 dev 네임스페이스를 지정서 testpod 라는 centos:7 이미지를 구동한 후 /bin/bash 로 접속
+$ kubectl run testpod -it --rm --image=centos:7 -n dev -- /bin/bash
+
+## 접속됨
+
+# 위에서 확인했던 ip 주소 192.168.234.194 로 요청을 보내서 dev 네임스페이스에서 접속이 가능한지 테스트
+$ curl 192.168.234.194 
+연결 실패한다.
+
+$ exit
+
+# -n prod 를 주어서 prod 네임스페이스를 지정서 testpod 라는 centos:7 이미지를 구동한 후 /bin/bash 로 접속
+$ kubectl run testpod -it --rm --image=centos:7 -n prod -- /bin/bash
+
+# 위에서 확인했던 ip 주소 192.168.234.194 로 요청을 보내서 prod 네임스페이스에서 접속이 가능한지 테스트
+$ curl 192.168.234.194 
+연결 성공한다.
+... 
+<h1> Welcome to Nginx </h1>
+...
+
+
+# 테스트를 위해 생성한 webpod 삭제, 네임스페이스 dev, prod 삭제, NetoworkPolicy 도 삭제
+$ kubectl delete pod webpod
+$ kubectl delete namespace {dev,prod}
+$ kubectl deleted networkpolicies web-allow-prod
+...
+
+
+```
+
+<br/>
 
 
 
@@ -213,4 +258,124 @@ $ kubectl delete networkpolicy web-allow-prod
 $ kubectl delete pod webpod 
 $ kubectl delete namespace {prod,dev}
 ```
+
+<br/>
+
+
+
+# e.g. 2
+
+> 작업 클러스터 : hk8s
+
+default namespace 에 다음과 같은 pod 를 생성하세요.
+
+- name : poc
+- image : nginx
+- port: 80
+- label: app=poc
+
+"partition=customera" 를 사용하는 namespace 에서만 poc 의 80 포트로 연결할 수 있도록 default namespace 에 'allow-web-from-customera' 라는 network policy 를 설정하세요. 보안정책상 다른 namespace의 접근은 제한합니다.<br/>
+
+
+
+## 풀이
+
+```bash
+# hk8s 접속
+$ kubectl config use-context hk8s
+
+# nginx pod 구동, label 은 app=poc , port=80
+$ kubectl run poc -it --image=nginx --label=app=poc --port=80
+
+# 확인
+$ kubectl get pod poc -o wide
+... 		IP					...
+...			192.168.75.105		...
+
+# 네임스페이스들 조회 (label 이 partition 이 붙은)
+# 이미 만들어져있다는 거 확인
+$ kubectl get namespaces -L partition
+NAME			...		PARTITION
+customera				customera
+customerb				customerb
+...
+
+
+# 북마크 NetowrkPolicy/ingress,egress 에 저장된 아래 도큐먼트 문서에서 기본 코드를 가져와서 작성한다.
+# https://kubernetes.io/docs/concepts/services-networking/network-policies/#networkpolicy-resource
+
+$ vi allow-web-from-customera.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-web-from-customera #
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: poc # 
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          project: customera #
+    ports:
+    - protocol: TCP
+      port: 80
+  
+#
+$ kubectl apply -f allow-web-from-customera.yaml
+networkpolicy.networking.k8s.io/allow-web-from-customera created
+
+
+$ kubectl run test --image=centos:7 -it --rm -n customera -- /bin/bash
+...
+
+
+[user@console ~]# curl 192.168.75.105
+... 
+
+<h1>Welcome to nginx!</h1>
+
+...
+
+
+[user@console ~]# exit
+
+
+```
+
+<br/>
+
+
+
+## 답
+
+```bash
+$ kubectl config use-context hk8s
+$ kubectl get namespaces -L partition
+$ kubectl run poc --image=nginx --port=80 --labels=app=poc 
+
+$ kubectl get pod poc -o wide
+$ vi allow-web-from-customera.yaml
+
+$ kubectl apply -f allow-web-from-customera.yaml
+$ kubectl run testpod -n customerb --image=centos:7 -it --rm -- /bin/bash 
+
+/]# curl 192.168.75.100 --실패
+/]# exit
+
+$ kubectl run testpod -n customera --image=centos:7 -it --rm -- /bin/bash 
+
+/]# curl 192.168.75.100
+/]# exit
+```
+
+<br/>
+
+
+
+
 
