@@ -54,23 +54,6 @@
 
 <br/>
 
- 
-
-# 참고 : RWO, ROX, RWX
-
-- ReadWriteOnce (RWO) : 한번에 하나의 노드만 볼륨을 Read/Write 가능하도록 마운트
-- ReadOnlyMany (ROX) : 여러 개의 노드가 Read 전용으로 사용하도록 마운트
-- ReadWriteMany (RWX) : 여러 개의 노드가 Read/Write 가능하도록 마운트
-
-<br/>
-
-
-
-# 공식문서
-
-- [Volumes - awsElasticBlockStore](https://kubernetes.io/docs/concepts/storage/volumes/#awselasticblockstore)
-- 
-
 
 
 # Volume Mounts
@@ -80,6 +63,16 @@
 - spec.capacity.storage : 스토리지 용량을 지정
 - spec.accessModes :
   - AccessMode 는 Volume 에 대한 Read/Write 권한을 제공하는 옵션
+
+<br/>
+
+ 
+
+# 참고 : RWO, ROX, RWX
+
+- ReadWriteOnce (RWO) : 한번에 하나의 노드만 볼륨을 Read/Write 가능하도록 마운트
+- ReadOnlyMany (ROX) : 여러 개의 노드가 Read 전용으로 사용하도록 마운트
+- ReadWriteMany (RWX) : 여러 개의 노드가 Read/Write 가능하도록 마운트
 
 <br/>
 
@@ -103,11 +96,28 @@
 
 요약하면 이렇다.<br/>
 
-kubernetes 1.31 버전에서 awsElasticBlockStore 는 `ebs.csi.aws.com` 이라는 [CSI](https://kubernetes.io/docs/concepts/storage/volumes/#csi) driver 로 이관되었다. `awsElasticBlockStore` 는 이미 kubernetes 1.19 버전에서 deprecated 되었고, kubernetes 1.27 버전에서는 완전하게 삭제되었다.
+kubernetes 1.31 버전에서 awsElasticBlockStore 는 `ebs.csi.aws.com` 이라는 [CSI](https://kubernetes.io/docs/concepts/storage/volumes/#csi) driver 로 이관되었다. `awsElasticBlockStore` 는 이미 kubernetes 1.19 버전에서 deprecated 되었고, kubernetes 1.27 버전에서는 완전하게 삭제되었다.<br/>
 
 
 
+# hostPath volume types
 
+참고 : [Storage/Volumes - volumes/hostPath volume types](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath-volume-types)
+
+- 기본 값은 "" 이다.
+
+| alue                | Behavior                                                     |
+| :------------------ | :----------------------------------------------------------- |
+| `‌""`                | Empty string (default) is for backward compatibility, which means that no checks will be performed before mounting the `hostPath` volume. |
+| `DirectoryOrCreate` | If nothing exists at the given path, an empty directory will be created there as needed with permission set to 0755, having the same group and ownership with Kubelet. |
+| `Directory`         | A directory must exist at the given path                     |
+| `FileOrCreate`      | If nothing exists at the given path, an empty file will be created there as needed with permission set to 0644, having the same group and ownership with Kubelet. |
+| `File`              | A file must exist at the given path                          |
+| `Socket`            | A UNIX socket must exist at the given path                   |
+| `CharDevice`        | *(Linux nodes only)* A character device must exist at the given path |
+| `BlockDevice`       | *(Linux nodes only)* A block device must exist at the given path |
+
+<br/>
 
 
 
@@ -116,6 +126,7 @@ kubernetes 1.31 버전에서 awsElasticBlockStore 는 `ebs.csi.aws.com` 이라�
 공식문서들을 주제 별로 북마크로도 저장해두긴 했는데, 혹시 모르니 아예 처음부터 찾아가는 방법을 익혀두자.<br/>
 
 - [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
+- [Volumes - awsElasticBlockStore](https://kubernetes.io/docs/concepts/storage/volumes/#awselasticblockstore)
 - [Volumes/Volumes - hostPath](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath)
 - [Cluster Administration/Logging Architecture - Using a sidecar container with the logging agent](https://kubernetes.io/docs/concepts/cluster-administration/logging/#sidecar-container-with-logging-agent)
 
@@ -146,27 +157,6 @@ kubernetes 1.31 버전에서 awsElasticBlockStore 는 `ebs.csi.aws.com` 이라�
 [Volumes/Volumes - hostPath](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath)<br/>
 
 ![](./img/storage-hostpath/2.png)
-
-<br/>
-
-
-
-# hostPath volume types
-
-참고 : [Storage/Volumes - volumes/hostPath volume types](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath-volume-types)
-
-- 기본 값은 "" 이다.
-
-| alue                | Behavior                                                     |
-| :------------------ | :----------------------------------------------------------- |
-| `‌""`                | Empty string (default) is for backward compatibility, which means that no checks will be performed before mounting the `hostPath` volume. |
-| `DirectoryOrCreate` | If nothing exists at the given path, an empty directory will be created there as needed with permission set to 0755, having the same group and ownership with Kubelet. |
-| `Directory`         | A directory must exist at the given path                     |
-| `FileOrCreate`      | If nothing exists at the given path, an empty file will be created there as needed with permission set to 0644, having the same group and ownership with Kubelet. |
-| `File`              | A file must exist at the given path                          |
-| `Socket`            | A UNIX socket must exist at the given path                   |
-| `CharDevice`        | *(Linux nodes only)* A character device must exist at the given path |
-| `BlockDevice`       | *(Linux nodes only)* A block device must exist at the given path |
 
 <br/>
 
