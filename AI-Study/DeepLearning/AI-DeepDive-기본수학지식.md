@@ -9,3 +9,11 @@
 
 
 ![](./img/0-math-basic/1-function-multi-var-function/2.png)
+
+<br/>
+
+
+
+# 2. 로그함수 기본 공식들
+
+![](./img/0-math-basic/2-log-function-basic/1.png)
