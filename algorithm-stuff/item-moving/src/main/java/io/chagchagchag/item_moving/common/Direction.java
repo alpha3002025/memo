@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Direction {
-  UP("UP"),
-  DOWN("DOWN");
+  UP("UP", -1),
+  DOWN("DOWN", 1);
   private final String alias;
+  private final Integer vector;
 }
