@@ -5,6 +5,7 @@ services:
     platform: linux/amd64
     command: redis-server --port 6379
     hostname: redis-localhost
+    container_name: local-redis
     labels:
       - "name=redis"
       - "mode=standalone"
