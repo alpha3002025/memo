@@ -12,6 +12,19 @@
 
 
 
+Pod<br/>
+
+Pod Basic Template 
+
+- http://kubernetes.io 방문 → `Documentation` 메뉴 클릭 → Concepts \> Workloads \> Pods \> [Pod templates](https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates) 클릭
+- http://kubernetes.io 방문 → `Documentation` 메뉴 클릭 → Task \> Inject Data Into Applications \> Define a Command and Arguments for a Container \> [Run  a command in a shell](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#run-a-command-in-a-shell) 클릭
+
+<br/>
+
+
+
+Static Pod<br/>
+
 [Defining Environment Variables for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/)
 
 - http://kubernetes.io 방문 → `Documentation` 메뉴 클릭 → Tasks \> Inject Data Into Applications \> [Defining Environment Variables for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/) 클릭
@@ -34,9 +47,218 @@
 
 # Pod
 
-개발자 또는 관리자가 kubectl 을 이용해서 어떤 pod 를 run 또는 apply 하는 명령을 내리면, 해당 이미지와 리소스 명세들은 쿠버네티스 클러스터 내의 API Server 로 전송된다. API Server 는 이 요청을 받으면 Sheduler 의 Scheduling 도움을 받아서 API가 동작시켜준다. 
+개발자 또는 관리자가 kubectl 을 이용해서 어떤 pod 를 run 또는 apply 하는 명령을 내리면, 해당 이미지와 리소스 명세들은 쿠버네티스 클러스터 내의 API Server 로 전송된다. API Server 는 이 요청을 받으면 Sheduler 의 Scheduling 도움을 받아서 API가 동작시켜준다.<br/>
 
-> 추가 내용 정리 예정
+## Pod 란?
+
+- 컨테이너를 담는 k8s API 의 최소 단위
+- Pod 에는 여러개의 컨테이너가 포함되는 것이 가능하다.
+
+예를 들어 nginx 이미지를 Pod 로 동작시키는 yaml 은 다음과 같다.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+spec:
+  containers:
+  - image: nginx:1.14
+    name: web
+    ports:
+    - containerPort: 80
+```
+
+<br/>
+
+
+
+## e.g. 파드 yaml 작성, 생성, 실행, 삭제
+
+이렇게 만든 컨테이너는 pod 로 동작시킬 때 다음과 같은 명령어를 통해 생성과 삭제를 할수 있다.
+
+```bash
+## nginx 파드 yaml 생성
+$ kubectl run web --image=nginx:1.14 --port=80 --dry-run -o yaml > nginx.yaml
+
+## pod yaml 수정
+$ vi nginx.yaml
+
+## 클러스터에 반영
+$ kubectl apply -f web.yaml
+
+## 조회
+$ kubectl get pod -n {네임스페이스}
+
+## 파드 삭제
+$ kubectl delete pod -n {네임스페이스} nginx
+
+```
+
+<br/>
+
+
+
+## Pod template 작성양식, 여러가지 작성법
+
+> 참고 
+>
+> - https://kubernetes.io/docs/concepts/workloads/pods/#using-pods 
+>
+> - https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates<br/>
+
+<br/>
+
+
+
+### 직접 작성
+
+Pod yaml 의 기본적인 구조는 다음과 같다.<br/>
+
+일반적으로는 이렇게 yaml 파일을 직접 작성해서 사용하기도 한다.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+```
+
+<br/>
+
+
+
+### CLI 로 기본 양식 생성 후 수정
+
+하지만, 시험 때는 이렇게 쓰면 시간이 부족해질 가능성이 너무나 크다. 그래서 CLI 로 어느 정도 만들어진 yaml 파일을 만든 후에 필요한 부분만 남기고 지우거나, 필요한 부분만 수정해서 쓰는 방식으로 적용한다.
+
+```bash
+$ kubectl run nginx --image=nginx:1.14 --port=80 --dry-run=client -o yaml > nginx.yaml
+
+$ vi nginx.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+spec:
+  containers:
+  - image: nginx:1.14
+    name: web
+    ports:
+    - containerPort: 80
+```
+
+<br/>
+
+
+
+### 실행,조회,삭제
+
+실행은 다음과 같이 한다.
+
+```bash
+$ kubectl apply -f nginx.yaml
+```
+
+<br/>
+
+
+
+조회는 다음과 같이 한다.
+
+```bash
+$ kubectl get pods web o -wide
+NAME		READY		STATUS		RESTARTS		AGE ..
+...
+```
+
+<br/>
+
+
+
+삭제는 다음과 같이 한다.
+
+```bash
+$ kubectl delete -f nginx.yaml
+```
+
+<br/>
+
+
+
+# e.g. 1
+
+참고자료 : [Run  a command in a shell](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#run-a-command-in-a-shell)
+
+
+
+> 작업 클러스터 : k8s
+
+cka-exam 이라는 namespace 를 만들고 이 namespace에 다음과 같은 pod 를 생성하세요.
+
+- pod name : pod-01
+- image : busybox
+- 환경 변수 : CERT = 'CKA-cert'
+- command : /bin/sh
+- args : -c "while true; do echo $(CERT); sleep 10; done"
+
+
+
+```bash
+## 현재 컨텍스트를 확인한다.
+$ kubectl config current-context
+k8s
+
+## k8s 라는 context 로 전환
+$ kubectl config use-context k8s
+Switched to context "k8s"
+
+## 예제를 위한 namespace 생성
+$ kubectl create namespace cka-exam
+
+## pod yaml 생성
+$ kubectl run pod-01 --image=busybox --dry-run=client -o yaml > 3-1.yaml
+
+## 3-1.yaml 수정
+## 필요한 부분만 남기고 수정할 부분은 수정한다.
+$ vi 3-1.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-01
+spec:
+  containers:
+  - image: busybox
+    name: pod-01
+    env:
+    - name: CERT
+      value: "CKA-cert"
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo $(CERT); sleep 10; done"]
+
+:wq
+
+
+## pod 를 클러스터에 적용한다.
+$ kubectl apply -f 3-1.yaml
+pod/pod-01 created
+```
+
+<br/>
+
+
+
+# e.g. 2
+
+<br/>
+
+
 
 
 
