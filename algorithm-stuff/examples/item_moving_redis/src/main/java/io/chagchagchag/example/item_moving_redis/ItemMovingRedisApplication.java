@@ -3,6 +3,7 @@ package io.chagchagchag.example.item_moving_redis;
 import io.chagchagchag.example.item_moving_redis.book.entity.Book;
 import io.chagchagchag.example.item_moving_redis.book.redis.BookRankingCache;
 import io.chagchagchag.example.item_moving_redis.book.repository.BookRepository;
+import io.chagchagchag.example.item_moving_redis.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -57,5 +58,14 @@ public class ItemMovingRedisApplication implements ApplicationRunner {
 			books.add(book);
 		}
 		bookRepository.saveAll(books);
+	}
+
+	@Transactional
+	public void generateProductData(){
+		List<Product> products = new ArrayList<>();
+		for(int i=(int)'A'; i<(int)'z'; i++){
+			if(Character.isAlphabetic(i))
+				System.out.println(Character.toString((char)i));
+		}
 	}
 }
