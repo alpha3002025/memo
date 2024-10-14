@@ -500,9 +500,83 @@ $ docker container exec -it local-redis redis-cli monitor
 
 
 
-# 성능테스트
+# 성능테스트 (vegeta)
 
-[locust](https://github.com/locustio/locust) 또는 [vegeta](https://github.com/tsenart/vegeta) 를 사용할 예정<br/>
+vegeta 에 대한 자세한 설명은 https://hippogrammer.tistory.com/272 을 참고하자.<br/>
+
+<br/>
+
+
+
+설치
+
+```bash
+## vegeta 다운로드
+$ wget https://github.com/tsenart/vegeta/releases/download/v12.12.0/vegeta_12.12.0_darwin_arm64.tar.gz
+
+## 압축 해제
+$ tar xvfz vegeta_12.12.0_darwin_arm64.tar.gz
+
+## 원한다면 아래와 같이 /usr/bin 으로 이동
+$ sudo mv vegeta /usr/bin/vegeta
+
+## 또는 위의 과정 대신 brew 를 사용한다면
+$ brew install vegeta
+## 사용 후에 꼭 지우는 것을 잊지 말자.
+
+```
+
+
+
+request 파일 작성 (request1.txt)
+
+```plain
+GET http://127.0.0.1:8080/books/1
+GET http://127.0.0.1:8080/books/2
+GET http://127.0.0.1:8080/books/3
+
+```
+
+<br/>
+
+
+
+실행
+
+```bash
+$ vegeta attack -timeout=30s -duration=15s -rate=7000/1s -targets=request1.txt -workers=100 | tee v_results.bin | vegeta report
+```
+
+- `vegeta attack` : 공격을 수행하겠다.
+- `-timeout=30s` : 각 요청의 타임아웃은 30초로 지정
+- `-duration=15s` : 15초 동안 테스트를 수행한다.
+- `-rate=7000/1s` : 1초에 7000번의 요청을 보낸다.
+- `-targets=request1.txt` : request1.txt 파일의 내용으로 요청을 보낸다.
+- `-workers=100` : worker 는 100 명으로 수행
+- tee v_results.bin : 표준 출력을 v_results.bin dㅣ라는 파일로 내보내겠다.
+- vegeta report : report 를 수행 
+
+<br/>
+
+
+
+1\) `@Cacheable` 이 적용된 상태에서 테스트
+
+```bash
+$ vegeta attack -timeout=30s -duration=15s -rate=7000/1s -targets=request1.txt -workers=100 | tee v_results.bin | vegeta report
+```
+
+<br/>
+
+
+
+2\) `@Cacheable` 을 주석 해제 후 테스트
+
+```bash
+$ vegeta attack -timeout=30s -duration=15s -rate=7000/1s -targets=request1.txt -workers=100 | tee v_results.bin | vegeta report
+```
+
+<br/>
 
 
 
