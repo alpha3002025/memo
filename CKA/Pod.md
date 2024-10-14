@@ -256,9 +256,46 @@ pod/pod-01 created
 
 # e.g. 2
 
+> 작업 클러스터 : hk8s
+
+Pod "custom-app" 의 log 를 모니터링하고 'file not found' 메시지를 포함하는 로그라인을 추츨하세요. 추출된 결과는 /opt/REPORT/2022/custom-app-log 에 기록하세요.<br/>
+
 <br/>
 
 
+
+```bash
+## 현재 컨텍스트 확인
+$ kubectl config current-context
+k8s
+
+## hk8s 로 전환
+$ kubectl config use-context hk8s
+Switched to context "hk8s"
+
+## custom-app 파드 확인
+$ kubectl get pods
+NAME					READY		...
+custom-app
+...
+
+## 로그 확인
+$ kubectl logs custom-app
+...
+
+## 기록
+$ kubectl logs custom-app | grep 'file not found' > /opt/REPORT/2022/custom-app-log
+...
+
+## 출력
+$ cat /opt/REPORT/2022/custom-app-log
+error: file not found
+error: file not found
+
+
+```
+
+<br/>
 
 
 
