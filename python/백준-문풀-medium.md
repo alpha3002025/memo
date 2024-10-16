@@ -303,3 +303,110 @@ print(d[n-1][3])
 ```
 
 <br/>
+
+
+
+# 8. 3273 - 두수의 합
+
+## 문제 링크
+
+- http://acmicpc.net/problem/3273
+
+<br/>
+
+## 설명
+
+![](./img/MEDIUM/3273-1.png)
+
+<br/>
+
+
+
+## 풀이
+
+```python
+n = int(input())
+a = list(map(int, input().split()))
+x = int(input())
+
+count = [0] * 1000001
+for i in range(n):
+    count[a[i]] += 1
+
+answer = 0
+for i in range((x+1) // 2):
+    if x - i >= 1000000:
+        continue
+    answer += count[i] * count[x-i]
+
+if x%2 == 0:
+    answer += count[x//2] * (count[x//2] -1) // 2
+
+print(answer)
+```
+
+<br/>
+
+
+
+# 9. 2014 - 소수의 곱
+
+## 문제링크
+
+- http://acmicpc.net/problem/2014
+
+## 설명
+
+우선순위 큐를 활용하는 문제다.
+
+- 주어진 k 개의 소수들을 우선순위 큐에 넣는다.
+
+<br/>
+
+
+
+그리고 다음의 2가지 연산들을 n 번 반복한다.
+
+- 가장 작은 수 x 를 우선순위 큐에서 빼준다.
+- x * P(k) 를 수행한 결과를 우선순위 큐에 넣어준다.
+  - e.g. x * P(1), x * P(2), x * P(3), ...
+  - 단, x*P(k) 가 이미 PriorityQueue 에 들어간적이 있다면 넣어주지 않는다. Dictionary 에 따로 출현했던 수 들을 기록해두고 딕셔너리에 이미 존재하는 수일 경우에는 skip 하는 식으로 진행한다.
+
+<br/>
+
+위의 두 연산을 반복한다.<br/>
+
+<br/>
+
+
+
+## 풀이
+
+```python
+import heapq
+
+k, n = map(int, input().split())
+numbers = list(map(int, input().split()))
+
+
+heap = []
+for num in numbers:
+    heapq.heappush(heap, num)
+
+v = 0
+for _ in range(n):
+    v = heapq.heappop(heap)
+
+    for num in numbers:
+        if v * num >= 2 ** 31:
+            break
+        
+        heapq.heappush(heap, v * num)
+        if v % num == 0:
+            break
+
+print(v)
+```
+
+<br/>
+
