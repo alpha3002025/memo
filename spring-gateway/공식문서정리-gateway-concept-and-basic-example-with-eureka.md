@@ -785,9 +785,17 @@ Filter 는 여러가지 종류가 있습니다. 약 40개 종류의 필터가 �
 
 
 
-## (1) Discovery Server 없이 Gateway,MSA 연결
+## (1) Gateway,MSA (non Eureka)
 
-example link : 
+example link 
+
+- https://github.com/chagchagchag/memo/tree/main/spring-gateway/example/gateway-non-eureka-msa-services
+
+example memo 
+
+- https://github.com/chagchagchag/memo/blob/main/spring-gateway/recipe-gateway-msa-non-eureka.md
+
+<br/>
 
 ![](./img/gateway-concept-and-basic-example-with-eureka/2-first-example.png)
 
@@ -797,7 +805,15 @@ example link :
 
 
 
-## (2) Discovery Server 와 함께 Gateway, MSA 연결
+## (2) Gateway, MSA + Eureka
+
+example link
+
+- https://github.com/chagchagchag/memo/tree/main/spring-gateway/example/gateway-eureka-msa-services
+
+example memo
+
+- https://github.com/chagchagchag/memo/blob/main/spring-gateway/recipe-gateway-msa-eureka.md
 
 
 
