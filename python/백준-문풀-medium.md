@@ -72,7 +72,7 @@ print(dist[k])
 
 ## 설명
 
-![](./img/MEDIUM/8911-1.png)
+![](./img/medium/8911-1.png)
 
 <br/>
 
@@ -141,7 +141,7 @@ check 라고 불리는 체크 용도의 배열을 선언해서 사용한다.<br/
 
 <br/>
 
-![](./img/MEDIUM/1333-1.png)
+![](./img/medium/1333-1.png)
 
 <br/>
 
@@ -320,7 +320,7 @@ print(d[n-1][3])
 
 ## 설명
 
-![](./img/MEDIUM/3273-1.png)
+![](./img/medium/3273-1.png)
 
 <br/>
 
