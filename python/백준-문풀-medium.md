@@ -72,6 +72,10 @@ print(dist[k])
 
 ## 설명
 
+![](./img/MEDIUM/8911-1.png)
+
+<br/>
+
 
 
 ## 풀이
