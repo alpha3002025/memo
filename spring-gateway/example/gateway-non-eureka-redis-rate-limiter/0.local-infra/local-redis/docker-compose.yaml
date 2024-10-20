@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:7.0
+    platform: linux/amd64
+    command: redis-server --port 6379
+    hostname: redis-localhost
+    container_name: local-redis
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - "26379:6379"
+    depends_on:
+      - redis-commander
+    links:
+      - redis-commander
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    platform: linux/amd64
+    hostname: redis-commander-localhost
+    restart: always
+    environment:
+      - REDIS_HOSTS=redis-localhost
+    ports:
+      - "38081:8081"
