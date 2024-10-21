@@ -3,3 +3,5 @@ spring:
     redis:
       host: localhost
       port: 26379
+server:
+  port: 8080

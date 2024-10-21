@@ -1,0 +1,29 @@
+### (1) 고양이 alice 추가
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{
+  "id": 1000,
+  "name": "alice"
+}
+
+###  (2) 고양이 brooks 추가
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{
+  "id": 2000,
+  "name": "brooks"
+}
+
+### (3) 고양이 cadens 추가
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{
+  "id": 3000,
+  "name": "cadens"
+}
+
+
+
