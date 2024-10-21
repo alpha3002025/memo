@@ -2,6 +2,7 @@ package io.chagchagchag.example.item_moving_redis_simple.cat.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.chagchagchag.example.item_moving_redis_simple.cat.dto.Cat;
+import io.chagchagchag.example.item_moving_redis_simple.cat.dto.CatCreateRedisRequest;
 import io.chagchagchag.example.item_moving_redis_simple.cat.dto.CatResultCode;
 import io.chagchagchag.example.item_moving_redis_simple.cat.dto.Direction;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,17 @@ import java.util.stream.Collectors;
 @Service
 public class CatRedisService {
     private final RedisTemplate<String, String> redisTemplate;
+    private final RedisScript<String> createOneScript;
     private final RedisScript<List<String>> catMovingEndScript;
     private final RedisScript<String> catMovingOneStepScript;
 
     private final ObjectMapper objectMapper = new ObjectMapper(); // ObjectMapper 로 어려운걸 할 게 없기에 간단하게 설정함
     private final String CACHE_CAT_LIST_KEY = "cat-list";
     private final String CACHE_MEMO_LIST_KEY = "memo-list";
+
+    public void createOne(CatCreateRedisRequest request){
+        redisTemplate.execute(createOneScript, List.of(CACHE_CAT_LIST_KEY), request.getId());
+    }
 
     public List<String> moveCatsToSide(List<Cat> requestItems, Direction direction) {
         List<Long> idList = requestItems.stream().map(cat -> cat.getId()).collect(Collectors.toList());

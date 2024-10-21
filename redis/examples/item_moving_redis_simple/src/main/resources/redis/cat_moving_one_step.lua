@@ -1,7 +1,7 @@
 local key_list = KEYS[1]
 
 local direction = ARGV[1]
-local cat_id = tonumber(ARGV[2])
+local cat_id = ARGV[2]
 
 local curr_pos = redis.call('LPOS', key_list, cat_id)
 

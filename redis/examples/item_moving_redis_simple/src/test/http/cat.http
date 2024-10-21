@@ -1,0 +1,31 @@
+
+### create one (alice)
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{ "id": 1, "name": "alice" }
+
+### create one (bale)
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{ "id": 2, "name": "bale" }
+
+### create one (chris)
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{ "id": 3, "name": "chris" }
+
+### move one step
+POST http://localhost:8080/cat/move-one-step
+Content-Type: application/json
+
+{
+  "items": [
+    {"id": 1, "name": "alice"},
+    {"id": 2, "name": "bale"}
+  ],
+  "direction": "DOWN",
+  "cnt": 1
+}
