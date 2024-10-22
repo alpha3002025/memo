@@ -18,15 +18,18 @@ if(curr_pos == 0) then
         curr = redis.call('LPOP', key_list)
         redis.call('RPUSH', key_list, curr)
     end
+    return 'SUCCESS'
 end
 
 -- 아래 방향으로 이동일때
 if(direction == 'DOWN') then
     arr = redis.call('LRANGE', key_list, curr_pos, curr_pos+1)
-    redis.call('LSET', key_list, curr_pos+1, arr[0])
-    redis.call('LSET', key_list, curr_pos, arr[1])
+    redis.call('LSET', key_list, curr_pos+1, arr[0]) -- 참고 : 일부 redis 버전에서는 lua script 내에서 lset 사용시 read only 관련 에러가 나타남
+    redis.call('LSET', key_list, curr_pos, arr[1]) -- 참고 : 일부 redis 버전에서는 lua script 내에서 lset 사용시 read only 관련 에러가 나타남
+    return 'SUCCESS'
 else
     arr = redis.call('LRANGE', key_list, curr_pos-1, curr_pos)
-    redis.call('LSET', key_list, curr_pos, arr[0])
-    redis.call('LSET', key_list, curr_pos-1, arr[1])
+    redis.call('LSET', key_list, curr_pos, arr[0]) -- 참고 : 일부 redis 버전에서는 lua script 내에서 lset 사용시 read only 관련 에러가 나타남
+    redis.call('LSET', key_list, curr_pos-1, arr[1]) -- 참고 : 일부 redis 버전에서는 lua script 내에서 lset 사용시 read only 관련 에러가 나타남
+    return 'SUCCESS'
 end 

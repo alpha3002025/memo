@@ -11,7 +11,7 @@ import java.util.List;
 
 @Configuration
 public class RedisScriptConfig {
-    @Primary
+//    @Primary
     @Bean
     public RedisScript<String> createOneScript(){
         ClassPathResource resource = new ClassPathResource("redis/cat_rpush.lua");
@@ -25,6 +25,7 @@ public class RedisScriptConfig {
         return RedisScript.of(resource, (Class<List<String>>) list.getClass());
     }
 
+    @Primary
     @Bean
     public RedisScript<String> catMovingOneStepScript(){
         ClassPathResource resource = new ClassPathResource("redis/cat_moving_one_step.lua");

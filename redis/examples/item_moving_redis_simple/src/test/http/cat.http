@@ -17,14 +17,41 @@ Content-Type: application/json
 
 { "id": 3, "name": "chris" }
 
+
+### create one (david)
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{ "id": 4, "name": "david" }
+
+
+### create one (elly)
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{ "id": 5, "name": "elly" }
+
+### create one (frank)
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{ "id": 6, "name": "frank" }
+
+### create one (gigs)
+POST http://localhost:8080/cat
+Content-Type: application/json
+
+{ "id": 7, "name": "gigs" }
+
+
 ### move one step
 POST http://localhost:8080/cat/move-one-step
 Content-Type: application/json
 
 {
   "items": [
-    {"id": 1, "name": "alice"},
-    {"id": 2, "name": "bale"}
+    {"id": 2, "name": "alice"},
+    {"id": 3, "name": "bale"}
   ],
   "direction": "DOWN",
   "cnt": 1
