@@ -213,12 +213,12 @@ dfs 는 다음과 같이 순회한다.<br/>
 ```python
 n = int(input())
 
-workers = list(map(int, input().split()))
+managers = list(map(int, input().split()))
 
-child = [[] for _ in range(n)]
+graph = [[] for _ in range(n)]
 
-for i in range(1, n):
-    child[workers[i]].append(i)
+for worker in range(1, n):
+    graph[managers[worker]].append(worker)
 
 d = [0] * n
 
@@ -226,7 +226,7 @@ def dfs(u):
     # d[u] 값을 구하는 것이 목표
 
     times = []
-    for v in child[u]:
+    for v in graph[u]:
         dfs(v)
         times.append(d[v])
     
