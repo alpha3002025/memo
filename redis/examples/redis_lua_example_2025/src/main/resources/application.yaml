@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: redis_lua_example
+  data:
+    redis:
+      host: localhost
+      port: 26379
+server:
+  port: 5999
